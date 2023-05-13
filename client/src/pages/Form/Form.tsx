@@ -3,6 +3,8 @@ import dayjs from "dayjs";
 import banner from "../../assets/banner.png";
 import { checkDateValidity, getSlots } from "../../components/Form/utils";
 import { useState } from "react";
+import Guidlines from "../../components/Form/Guidelines";
+import StepTitle from "../../components/Form/StepTitle";
 
 const Form: React.FC = () => {
   // create DayJs object for today and 3 weeks from now
@@ -20,12 +22,15 @@ const Form: React.FC = () => {
       <h1 className="text-5xl font-semibold p-2 mt-3">
         Walk-in Session Slot Booking
       </h1>
-      <h4 className="text-lg font-normal mb-16">Your well-being matters.</h4>
+      <h4 className="text-lg font-normal mb-8">Your well-being matters.</h4>
+      <Guidlines />
+      <StepTitle number={1}>Select date and time</StepTitle>
       <div className="flex flex-row items-center justify-between">
         <div className="w-1/2 max-h-[50%] p-1 rounded-xl">
           <Calendar
             fullscreen={true}
-            className=""
+            className="bg-transparent"
+            rootClassName="bg-transparent"
             headerRender={(header) => {
               return null;
             }}
@@ -86,6 +91,9 @@ const Form: React.FC = () => {
           </Row>
         </div>
       </div>
+      <StepTitle number={2} className="mt-20">
+        Fill Personal Information
+      </StepTitle>
     </div>
   );
 };
