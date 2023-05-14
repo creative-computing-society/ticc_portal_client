@@ -9,7 +9,7 @@ function App() {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#fb923c",
+          colorPrimary: "#38bdf8",
           colorText: "#444444",
         },
       }}

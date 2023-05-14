@@ -1,6 +1,6 @@
 const Guidlines: React.FC = () => {
   return (
-    <div className="mb-12 p-4 rounded-lg bg-orange-400 bg-opacity-20">
+    <div className="mb-12 p-4 rounded-lg bg-sky-200 bg-opacity-50">
       <h3 className="text-xl font-medium mb-2">Some Important Guidelines:</h3>
       <ul className="list-disc list-outside ml-4 flex flex-col gap-2">
         <li>

@@ -10,7 +10,9 @@ const Form: React.FC = () => {
   // create DayJs object for today and 3 weeks from now
   const startDate = dayjs();
   const endDate = startDate.add(2, "week");
-  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
+  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(
+    startDate
+  );
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const slotStart = dayjs().hour(9).minute(0).second(0);
   const slotEnd = dayjs().hour(17).minute(0).second(0);
@@ -44,12 +46,14 @@ const Form: React.FC = () => {
               return (
                 <div
                   className={`flex flex-col items-center m-2 p-2 ${
-                    !isSelected ? "hover:bg-orange-400 hover:bg-opacity-10" : ""
+                    !isSelected ? "hover:bg-sky-400 hover:bg-opacity-20" : ""
                   } rounded-md ${
                     checkDateValidity(date, startDate, endDate)
                       ? "cursor-pointer"
                       : "cursor-not-allowed"
-                  } ${isSelected ? "bg-orange-300 bg-opacity-60" : ""}`}
+                  } ${
+                    isSelected ? "bg-sky-400 bg-opacity-100 text-white" : ""
+                  }`}
                 >
                   <div className="font-bold">{date.date()}</div>
                   <div className="text-sm">{date.format("MMM")}</div>
@@ -75,7 +79,7 @@ const Form: React.FC = () => {
                     type={selectedSlot === slot ? "primary" : "default"}
                     style={{
                       backgroundColor:
-                        selectedSlot === slot ? "#fb923c" : "#fff",
+                        selectedSlot === slot ? "#38bdf8" : "#fff",
                     }}
                     onClick={() => {
                       setSelectedSlot(slot);

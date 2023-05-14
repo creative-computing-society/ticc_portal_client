@@ -13,7 +13,7 @@ body {
   background: linear-gradient(
     320deg,
     rgba(255, 255, 255, 1) 65%,
-    rgba(255, 239, 200, 1) 100%
+    #38bff87a 100%
   );
 }
 
