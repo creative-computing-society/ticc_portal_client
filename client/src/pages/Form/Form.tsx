@@ -10,9 +10,7 @@ const Form: React.FC = () => {
   // create DayJs object for today and 3 weeks from now
   const startDate = dayjs();
   const endDate = startDate.add(2, "week");
-  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(
-    startDate
-  );
+  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(startDate);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const slotStart = dayjs().hour(9).minute(0).second(0);
   const slotEnd = dayjs().hour(17).minute(0).second(0);
@@ -63,8 +61,6 @@ const Form: React.FC = () => {
             onSelect={(date) => {
               if (checkDateValidity(date, startDate, endDate)) {
                 setSelectedDate(date);
-              } else {
-                setSelectedDate(null);
               }
             }}
           />
@@ -84,6 +80,9 @@ const Form: React.FC = () => {
                     onClick={() => {
                       setSelectedSlot(slot);
                     }}
+                    disabled={
+                      !checkDateValidity(selectedDate, startDate, endDate)
+                    }
                   >
                     <span className="py-1.5 items-center justify-center text-base font-semibold">
                       {slot}
