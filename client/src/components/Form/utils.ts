@@ -22,8 +22,7 @@ export const getSlots = (
   let currentTime = startTime;
   while (currentTime.isBefore(endTime)) {
     // convert to 12 hour time
-    const time = currentTime.format("hh:mm A");
-    slots.push(time);
+    slots.push(currentTime);
     currentTime = currentTime.add(interval, "minute");
   }
   return slots;

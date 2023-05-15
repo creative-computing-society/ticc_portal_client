@@ -2,19 +2,33 @@ import { Button, Calendar, Col, Image, Row } from "antd";
 import dayjs from "dayjs";
 import banner from "../../assets/banner.png";
 import { checkDateValidity, getSlots } from "../../components/Form/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Guidlines from "../../components/Form/Guidelines";
 import StepTitle from "../../components/Form/StepTitle";
 
 const Form: React.FC = () => {
   // create DayJs object for today and 3 weeks from now
-  const startDate = dayjs();
+  const startDate = dayjs().add(-1, "day");
   const endDate = startDate.add(2, "week");
-  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(startDate);
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const slotStart = dayjs().hour(9).minute(0).second(0);
-  const slotEnd = dayjs().hour(17).minute(0).second(0);
-  const slots = getSlots(slotStart, slotEnd, 30);
+  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
+  const [selectedSlot, setSelectedSlot] = useState<dayjs.Dayjs | null>(null);
+  const initialSlotStart = dayjs().hour(9).minute(0).second(0);
+  const initialSlotEnd = dayjs().hour(17).minute(0).second(0);
+  const [slots, setSlots] = useState<dayjs.Dayjs[]>(
+    getSlots(initialSlotStart, initialSlotEnd, 30)
+  );
+
+  useEffect(() => {
+    let slotStart = selectedDate
+      .hour(initialSlotStart.hour())
+      .minute(initialSlotStart.minute())
+      .second(initialSlotStart.second());
+    let slotEnd = selectedDate
+      .hour(initialSlotEnd.hour())
+      .minute(initialSlotEnd.minute())
+      .second(initialSlotEnd.second());
+    setSlots(getSlots(slotStart, slotEnd, 30));
+  }, [selectedDate]);
 
   return (
     <div className="flex flex-col items-center max-w-5xl mx-auto">
@@ -59,10 +73,20 @@ const Form: React.FC = () => {
               );
             }}
             onSelect={(date) => {
-              if (checkDateValidity(date, startDate, endDate)) {
-                setSelectedDate(date);
+              if (date.isAfter(dayjs())) {
+                setSelectedDate(date.hour(0).minute(0).second(0));
+              } else {
+                setSelectedDate(dayjs());
               }
             }}
+            // onChange={(date) => {
+            //   if (date.isAfter(dayjs())) {
+            //     setSelectedDate(date.hour(0).minute(0).second(0));
+            //   } else {
+            //     setSelectedDate(dayjs());
+            //   }
+            //   console.log(date);
+            // }}
           />
         </div>
         <div className="w-1/2 ml-16">
@@ -72,20 +96,28 @@ const Form: React.FC = () => {
                 <Col span={12}>
                   <Button
                     className="w-full h-full bg-[unset]"
-                    type={selectedSlot === slot ? "primary" : "default"}
+                    type={
+                      slot.isSame(selectedSlot, "seconds")
+                        ? "primary"
+                        : "default"
+                    }
                     style={{
-                      backgroundColor:
-                        selectedSlot === slot ? "#38bdf8" : "#fff",
+                      backgroundColor: slot.isSame(selectedSlot, "seconds")
+                        ? "#38bdf8"
+                        : "#fff",
                     }}
                     onClick={() => {
+                      console.log(slot);
                       setSelectedSlot(slot);
                     }}
                     disabled={
-                      !checkDateValidity(selectedDate, startDate, endDate)
+                      !checkDateValidity(selectedDate, startDate, endDate) ||
+                      (slot.hour() < selectedDate.hour() &&
+                        slot.minute() < selectedDate.minute())
                     }
                   >
                     <span className="py-1.5 items-center justify-center text-base font-semibold">
-                      {slot}
+                      {slot.format("hh:mm A")}
                     </span>
                   </Button>
                 </Col>
