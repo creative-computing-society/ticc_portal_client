@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  max-height: 100vh;
+  overflow: hidden;
+  width: 100vw;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -9,12 +15,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: rgb(255, 255, 255);
+  /* background: rgb(255, 255, 255);
   background: linear-gradient(
     330deg,
     rgba(255, 255, 255, 1) 69%,
     #38bff84a 100%
-  );
+  ); */
+  background: rgb(252, 254, 255);
+  background-repeat: no-repeat;
+  height: 100vh;
+  overflow: scroll;
 }
 
 code {
@@ -31,4 +41,8 @@ code {
 .ant-picker-calendar tr {
   padding-bottom: 8px;
   border-bottom: 1px solid #f0f0f0;
+}
+
+.ant-layout-sider-trigger {
+  background-color: #38bdf8;
 }

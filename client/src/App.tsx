@@ -7,6 +7,7 @@ import {
   Redirect,
   BrowserRouter as Router,
 } from "react-router-dom";
+import AdminPage from "./pages/Admin";
 
 function App() {
   return (
@@ -15,16 +16,28 @@ function App() {
         token: {
           colorPrimary: "#38bdf8",
           colorText: "#444444",
+          colorBgLayout: "#ffffff",
+          colorLinkHover: "#38bdf8",
+        },
+        components: {
+          Menu: {
+            colorBgTextActive: "#38bdf8",
+            colorItemText: "#444444",
+            colorItemTextHover: "#444444",
+          },
         },
       }}
     >
-      <div className="p-6 text-[#333333]">
-        <Switch>
-          <Route path={"/"} exact>
+      <Switch>
+        <Route path={"/"} exact>
+          <div className="p-6 text-[#333333]">
             <Form />
-          </Route>
-        </Switch>
-      </div>
+          </div>
+        </Route>
+        <Route path={"/admin"}>
+          <AdminPage />
+        </Route>
+      </Switch>
     </ConfigProvider>
   );
 }
