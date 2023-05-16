@@ -1,8 +1,12 @@
 import React from "react";
-import { Calendar, ConfigProvider } from "antd";
-import dayjs from "dayjs";
-import type { CalendarMode } from "antd/es/calendar/generateCalendar";
+import { ConfigProvider } from "antd";
 import Form from "./pages/Form/Form";
+import {
+  Route,
+  Switch,
+  Redirect,
+  BrowserRouter as Router,
+} from "react-router-dom";
 
 function App() {
   return (
@@ -15,7 +19,11 @@ function App() {
       }}
     >
       <div className="p-6 text-[#333333]">
-        <Form />
+        <Switch>
+          <Route path={"/"} exact>
+            <Form />
+          </Route>
+        </Switch>
       </div>
     </ConfigProvider>
   );

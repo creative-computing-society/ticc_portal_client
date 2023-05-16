@@ -113,11 +113,7 @@ const Form: React.FC = () => {
                       console.log(slot);
                       setSelectedSlot(slot);
                     }}
-                    disabled={
-                      !checkDateValidity(selectedDate, startDate, endDate) ||
-                      (slot.hour() < selectedDate.hour() &&
-                        slot.minute() < selectedDate.minute())
-                    }
+                    disabled={slot.isBefore(dayjs())}
                   >
                     <span className="py-1.5 items-center justify-center text-base font-semibold">
                       {slot.format("hh:mm A")}
