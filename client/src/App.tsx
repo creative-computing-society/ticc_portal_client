@@ -1,12 +1,7 @@
 import React from "react";
 import { ConfigProvider } from "antd";
 import Form from "./pages/Form/Form";
-import {
-  Route,
-  Switch,
-  Redirect,
-  BrowserRouter as Router,
-} from "react-router-dom";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
@@ -28,16 +23,17 @@ function App() {
         },
       }}
     >
-      <Switch>
-        <Route path={"/"} exact>
-          <div className="p-6 text-[#333333]">
-            <Form />
-          </div>
-        </Route>
-        <Route path={"/dashboard"}>
-          <Dashboard />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route
+          path={"/"}
+          element={
+            <div className="p-6 text-[#333333]">
+              <Form />
+            </div>
+          }
+        ></Route>
+        <Route path={"/dashboard/*"} element={<Dashboard />}></Route>
+      </Routes>
     </ConfigProvider>
   );
 }

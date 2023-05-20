@@ -2,11 +2,25 @@ import { Layout, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
 import logo from "../../assets/logo.png";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdminMenuItems, getMenuItems } from "./config";
+import AdminHome from "./Admin";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 const Dashboard = () => {
+  const paths = AdminMenuItems.map((item) => item.route);
   const [collapsed, setCollapsed] = useState(false);
+  const { pathname } = useLocation();
+  const path = pathname.split("/").slice(2).join("/");
+  const [selectedMenuItem, setSelectedMenuItem] = useState(
+    paths.indexOf(path).toString()
+  );
+
+  useEffect(() => {
+    // remove /dashboard from pathname
+    const path = pathname.split("/").slice(2).join("/");
+    setSelectedMenuItem(paths.indexOf(path).toString());
+  }, [pathname]);
 
   return (
     <Layout style={{ minHeight: "100vh" }} className="bg-sky-50 bg-opacity-50">
@@ -30,12 +44,29 @@ const Dashboard = () => {
         </div>
         <Menu
           theme="dark"
-          defaultSelectedKeys={["0"]}
+          defaultSelectedKeys={[selectedMenuItem]}
           items={getMenuItems(AdminMenuItems)}
           className="mt-12 px-3 h-full flex flex-col bg-transparent items-center"
         />
       </Sider>
-      <div className="p-8"></div>
+      <div className="p-8">
+        <Routes>
+          <Route path={""} element={<AdminHome />}></Route>
+          <Route
+            path={"manage/slots"}
+            element={<div>Manage Slots</div>}
+          ></Route>
+          <Route
+            path={"manage/resources"}
+            element={<div>Manage Resources</div>}
+          ></Route>
+          <Route
+            path={"manage/admins"}
+            element={<div>Manage Admins</div>}
+          ></Route>
+          <Route path={"logout"} element={<div>Logout</div>}></Route>
+        </Routes>
+      </div>
     </Layout>
   );
 };
