@@ -7,7 +7,7 @@ import {
   Redirect,
   BrowserRouter as Router,
 } from "react-router-dom";
-import AdminPage from "./pages/Admin";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -34,8 +34,8 @@ function App() {
             <Form />
           </div>
         </Route>
-        <Route path={"/admin"}>
-          <AdminPage />
+        <Route path={"/dashboard"}>
+          <Dashboard />
         </Route>
       </Switch>
     </ConfigProvider>
