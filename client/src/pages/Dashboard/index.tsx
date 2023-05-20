@@ -37,7 +37,7 @@ const Dashboard = () => {
           <img
             src={logo}
             alt="logo"
-            className="w-full pb-2 mb-4 border-b border-[#444444] border-opacity-50"
+            className="w-full pb-2 mb-8 border-b border-[#444444] border-opacity-50"
           />
           <span className="text-3xl font-bold mb-1">Hello, Sonam!</span>
           <span className="text-sm font-medium">Have a nice day 🌷</span>
@@ -49,7 +49,7 @@ const Dashboard = () => {
           className="mt-12 px-3 h-full flex flex-col bg-transparent items-center"
         />
       </Sider>
-      <div className="p-8">
+      <div className="p-8 w-full">
         <Routes>
           <Route path={""} element={<AdminHome />}></Route>
           <Route
