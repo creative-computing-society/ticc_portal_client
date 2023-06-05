@@ -43,8 +43,12 @@ class AvailableSlot(models.Model):
                 end_minute = (j + 1) * 30
                 start_datetime = timezone.datetime.combine(date, start_time) + timezone.timedelta(minutes=start_minute)
                 end_datetime = timezone.datetime.combine(date, start_time) + timezone.timedelta(minutes=end_minute)
-                cls.objects.create(date=date, start_time=start_datetime.time(), end_time=end_datetime.time())
-
+                try:
+                    cls.objects.create(date=date, start_time=start_datetime.time(), end_time=end_datetime.time())
+                except:
+                    pass
+                
+    @classmethod
     def generate_slots_next_day(self):
         # Define the start and end times for each day
         start_time = timezone.datetime(2000, 1, 1, 9, 0, tzinfo=timezone.utc).time()
@@ -67,8 +71,10 @@ class AvailableSlot(models.Model):
             end_minute = (j + 1) * 30
             start_datetime = timezone.datetime.combine(date, start_time) + timezone.timedelta(minutes=start_minute)
             end_datetime = timezone.datetime.combine(date, start_time) + timezone.timedelta(minutes=end_minute)
-            self.objects.create(date=date, start_time=start_datetime.time(), end_time=end_datetime.time())
-
+            try:
+                self.objects.create(date=date, start_time=start_datetime.time(), end_time=end_datetime.time())
+            except:
+                pass
 
     def __str__(self):
         return f"{self.date} {self.start_time} "
