@@ -58,6 +58,20 @@
    $ python manage.py test
    ```
 
+### Management Commands 
+
+- To populate Database with test users present in test_users.csv, run the following command:
+
+   ```
+   $ python manage.py populate_users
+   ```
+
+- To populate Data with test slots 
+
+    ```
+    $ python manage.py create_slots
+    ```
+
 ### Deployment
 
 - Refer to the official Django documentation for instructions on deploying Django projects to production environments.
