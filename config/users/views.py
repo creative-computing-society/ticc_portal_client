@@ -11,7 +11,6 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
 
-
 class UserList(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, IsTiccCounsellor]
     authentication_classes = [TokenAuthentication]
