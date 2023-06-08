@@ -10,6 +10,7 @@ from slots.models import AvailableSlot
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
+from .tasks import send_booking_confirmation_email
 
 class UserList(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, IsTiccCounsellor]
@@ -228,6 +229,21 @@ class CreateBookingView(generics.CreateAPIView):
         slot.save()
         
         serializer = self.get_serializer(booking)
+        print(serializer.data)
+        # Send email to student
+        # try:
+        #     send_booking_confirmation_email.delay(student.user.email, booking)
+        # except Exception as e:
+        #     print(e) ##use logger
+        #send_booking_confirmation_email.delay(student.user.email, serializer.data)
+        slot_date = booking.slot.date.strftime('%A, %B %d')
+        slot_start_time = booking.slot.start_time.strftime('%I:%M %p')
+        context = {
+        'student_name': booking.student.user.full_name,
+        'slot_date': slot_date,
+        'slot_start_time': slot_start_time,
+        }
+        send_booking_confirmation_email.delay(student.user.email, context)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 
@@ -279,3 +295,21 @@ class UpdateBookingView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class emailBookingCancellation(APIView):
+    def get(self, request, booking_token):
+        booking = Booking.objects.get(token=booking_token)
+        booking.is_active = False
+        booking.remarks = "Cancelled by student"
+        booking.save()
+        # Decrement the slots_booked count for the slot
+        slot = booking.slot
+        slot.slots_booked -= 1
+        if slot.slots_booked < slot.capacity:
+            slot.isAvailable = True
+        slot.save()
+
+        return Response({'detail': 'Booking cancelled successfully.'}, status=status.HTTP_204_NO_CONTENT)
+    

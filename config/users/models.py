@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.models import BaseUserManager
 from django.core.exceptions import ValidationError
-from django.apps import apps
+import uuid
 
 
 class UserManager(BaseUserManager):
@@ -88,6 +88,7 @@ class Booking(models.Model):
     assigned_counsellor = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'is_ticc_counsellor': True}, null=True, blank=True)
     remarks = models.CharField(max_length=40, choices=REMARK_CHOICES, default='Pending')
     is_active = models.BooleanField(default=True)
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     class Meta:
         constraints = [
@@ -109,3 +110,4 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.student.user.email} - {self.slot}"
+    

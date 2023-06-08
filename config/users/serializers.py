@@ -38,10 +38,26 @@ class StudentSerializer(serializers.ModelSerializer):
         return instance
 
 
+# class BookingSerializer(serializers.ModelSerializer):
+#     student_email = serializers.EmailField(source='student.user.email', read_only=True)
+#     assigned_counsellor_email = serializers.EmailField(source='assigned_counsellor.user.email', read_only=True)
+#     slot = AvailableSlotSerializer(read_only=True)
+#     class Meta:
+#         model = Booking
+#         fields = ['id', 'slot', 'student', 'student_email', 'additional_info', 'remarks',  "assigned_counsellor", "assigned_counsellor_email", "is_active"]
+
 class BookingSerializer(serializers.ModelSerializer):
     student_email = serializers.EmailField(source='student.user.email', read_only=True)
     assigned_counsellor_email = serializers.EmailField(source='assigned_counsellor.user.email', read_only=True)
     slot = AvailableSlotSerializer(read_only=True)
+
     class Meta:
         model = Booking
-        fields = ['id', 'slot', 'student', 'student_email', 'additional_info', 'remarks',  "assigned_counsellor", "assigned_counsellor_email", "is_active"]
+        fields = ['id', 'slot', 'student', 'student_email', 'additional_info', 'remarks',
+                  'assigned_counsellor', 'assigned_counsellor_email', 'is_active']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['student'] = instance.student.id
+        representation['assigned_counsellor'] = instance.assigned_counsellor.id if instance.assigned_counsellor else None
+        return representation

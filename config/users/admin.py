@@ -51,5 +51,19 @@ class CustomStudentView(admin.ModelAdmin):
         return self.readonly_fields
 
     
+@admin.register(Booking)
+class CustomBookingAdmin(admin.ModelAdmin):
+    list_display = ['student', 'slot', 'remarks', 'is_active', 'token']
+    list_filter = ['slot__date', 'is_active']
+    readonly_fields = ['token']
+    search_fields = ['student__user__email', 'slot__date']
 
-admin.site.register(Booking)
+
+    actions = ['cancel_selected_bookings']
+
+    def cancel_selected_bookings(self, request, queryset):
+        for booking in queryset:
+            booking.remarks = 'Cancelled by admin'
+            booking.save()
+
+    cancel_selected_bookings.short_description = 'Cancel selected bookings'
