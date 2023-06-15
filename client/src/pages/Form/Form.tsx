@@ -43,7 +43,7 @@ const Form: React.FC = () => {
   }, [selectedDate]);
 
   return (
-    <div className="flex flex-col items-center max-w-5xl mx-auto">
+    <div className="flex flex-col items-center max-w-5xl mx-auto h-full overflow-y-scroll">
       <Image src={banner} preview={false} className="rounded-lg" />
       <h1 className="text-5xl font-semibold p-2 mt-3">
         Walk-in Session Slot Booking

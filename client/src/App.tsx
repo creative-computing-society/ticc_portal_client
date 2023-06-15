@@ -27,7 +27,7 @@ function App() {
         <Route
           path={"/"}
           element={
-            <div className="p-6 text-[#333333]">
+            <div className="p-6 text-[#333333] h-full">
               <Form />
             </div>
           }

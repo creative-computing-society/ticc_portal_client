@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { AdminMenuItems, getMenuItems } from "./config";
 import AdminHome from "./Admin";
 import { Route, Routes, useLocation } from "react-router-dom";
+import ManageAdmins from "./Admin/ManageAdmins";
 
 const Dashboard = () => {
   const paths = AdminMenuItems.map((item) => item.route);
@@ -23,7 +24,10 @@ const Dashboard = () => {
   }, [pathname]);
 
   return (
-    <Layout style={{ minHeight: "100vh" }} className="bg-sky-50 bg-opacity-50">
+    <Layout
+      style={{ minHeight: "100vh", maxHeight: "100vh", overflow: "hidden" }}
+      className="bg-sky-50 bg-opacity-50"
+    >
       <Sider
         // collapsible
         collapsed={collapsed}
@@ -46,7 +50,7 @@ const Dashboard = () => {
           theme="dark"
           defaultSelectedKeys={[selectedMenuItem]}
           items={getMenuItems(AdminMenuItems)}
-          className="mt-12 px-3 h-full flex flex-col bg-transparent items-center"
+          className="mt-12 px-3 h-screen flex flex-col bg-transparent items-center"
         />
       </Sider>
       <div className="p-8 w-full">
@@ -60,10 +64,7 @@ const Dashboard = () => {
             path={"manage/resources"}
             element={<div>Manage Resources</div>}
           ></Route>
-          <Route
-            path={"manage/admins"}
-            element={<div>Manage Admins</div>}
-          ></Route>
+          <Route path={"manage/admins"} element={<ManageAdmins />}></Route>
           <Route path={"logout"} element={<div>Logout</div>}></Route>
         </Routes>
       </div>

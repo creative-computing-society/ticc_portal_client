@@ -1,5 +1,6 @@
 import { Progress, Tabs, Tooltip } from "antd";
 import { tabItems } from "./config";
+import SearchBar from "../../../components/Dashboard/Admin/Search";
 
 const AdminHome: React.FC = () => {
   const overviewData = {
@@ -44,9 +45,11 @@ const AdminHome: React.FC = () => {
           strokeColor="#b91c1c"
           showInfo={false}
           className="mt-4"
+          strokeLinecap="square"
         />
       </Tooltip>
-      <div className="mt-10">
+      <SearchBar placeholder="Search student by email or name" />
+      <div className="mt-8">
         <Tabs
           defaultActiveKey="1"
           items={tabItems}
