@@ -7,6 +7,7 @@ import { AdminMenuItems, getMenuItems } from "./config";
 import AdminHome from "./Admin";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ManageAdmins from "./Admin/ManageAdmins";
+import ManageSlots from "./Admin/ManageSlots";
 
 const Dashboard = () => {
   const paths = AdminMenuItems.map((item) => item.route);
@@ -25,7 +26,13 @@ const Dashboard = () => {
 
   return (
     <Layout
-      style={{ minHeight: "100vh", maxHeight: "100vh", overflow: "hidden" }}
+      style={{
+        minHeight: "100vh",
+        maxHeight: "100vh",
+        overflow: "hidden",
+        maxWidth: "100vw",
+        width: "100vw",
+      }}
       className="bg-sky-50 bg-opacity-50"
     >
       <Sider
@@ -53,13 +60,10 @@ const Dashboard = () => {
           className="mt-12 px-3 h-screen flex flex-col bg-transparent items-center"
         />
       </Sider>
-      <div className="p-8 w-full">
+      <div className="p-8 w-full overflow-y-scroll">
         <Routes>
           <Route path={""} element={<AdminHome />}></Route>
-          <Route
-            path={"manage/slots"}
-            element={<div>Manage Slots</div>}
-          ></Route>
+          <Route path={"manage/slots"} element={<ManageSlots />}></Route>
           <Route
             path={"manage/resources"}
             element={<div>Manage Resources</div>}
