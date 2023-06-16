@@ -19,11 +19,11 @@ export const AdminMenuItems: MenuItemArgs[] = [
     icon: <SettingOutlined style={{ fontSize: "20px" }} />,
     route: "manage/slots",
   },
-  {
-    title: "Manage Resources",
-    icon: <FolderOutlined style={{ fontSize: "20px" }} />,
-    route: "manage/resources",
-  },
+  // {
+  //   title: "Manage Resources",
+  //   icon: <FolderOutlined style={{ fontSize: "20px" }} />,
+  //   route: "manage/resources",
+  // },
   {
     title: "Manage Admins",
     icon: <TeamOutlined style={{ fontSize: "20px" }} />,

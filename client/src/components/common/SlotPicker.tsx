@@ -30,6 +30,7 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
 
     if (onDateChange) {
       onDateChange(selectedDate);
+      onSelectSlot(null);
     }
   }, [selectedDate]);
   return (
