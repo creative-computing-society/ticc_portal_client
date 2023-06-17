@@ -8,6 +8,7 @@ import AdminHome from "./Admin";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ManageAdmins from "./Admin/ManageAdmins";
 import ManageSlots from "./Admin/ManageSlots";
+import Student from "./Admin/Student";
 
 const Dashboard = () => {
   const paths = AdminMenuItems.map((item) => item.route);
@@ -70,6 +71,8 @@ const Dashboard = () => {
           ></Route>
           <Route path={"manage/admins"} element={<ManageAdmins />}></Route>
           <Route path={"logout"} element={<div>Logout</div>}></Route>
+          <Route path={"student/:id"} element={<Student />}></Route>
+          <Route path={"*"} element={<div>404</div>}></Route>
         </Routes>
       </div>
     </Layout>
