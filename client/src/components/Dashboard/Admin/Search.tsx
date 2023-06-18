@@ -1,10 +1,10 @@
 import { InputRef, Select, SelectProps } from "antd";
 import { useEffect, useState } from "react";
 import { SearchOutlined, CloseOutlined } from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
+const { Option } = Select;
 
 const SearchBar: React.FC<SelectProps<any>> = ({ placeholder, ...rest }) => {
-  const [showResults, setShowResults] = useState(false);
-  const [searchWord, setSearchWord] = useState("");
   const [results, setResults] = useState([
     "Result 1",
     "Result 2",
@@ -14,13 +14,7 @@ const SearchBar: React.FC<SelectProps<any>> = ({ placeholder, ...rest }) => {
     "Result 6",
   ]);
 
-  useEffect(() => {
-    if (searchWord.length > 0) {
-      setShowResults(true);
-    } else {
-      setShowResults(false);
-    }
-  }, [searchWord]);
+  const navigate = useNavigate();
 
   return (
     <div className="w-full my-4 relative">
@@ -34,23 +28,18 @@ const SearchBar: React.FC<SelectProps<any>> = ({ placeholder, ...rest }) => {
         // filterOption={(input, option) =>
         //   (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
         // }
-        options={[
-          {
-            value: "jack",
-            label: "Jack",
-          },
-          {
-            value: "lucy",
-            label: "Lucy",
-          },
-          {
-            value: "tom",
-            label: "Tom",
-          },
-        ]}
+        onSelect={(value) => {
+          navigate(`/dashboard/students/${value}`);
+        }}
         suffixIcon={<SearchOutlined />}
         className="w-full"
-      />
+      >
+        {results.map((result, index) => (
+          <Option value={result} label={result}>
+            {result}
+          </Option>
+        ))}
+      </Select>
     </div>
   );
 };
