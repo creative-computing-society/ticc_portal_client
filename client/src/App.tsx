@@ -1,7 +1,7 @@
 import React from "react";
 import { ConfigProvider } from "antd";
 import Form from "./pages/Form/Form";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
