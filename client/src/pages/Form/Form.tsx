@@ -16,7 +16,7 @@ const Form: React.FC = () => {
   }, [selectedSlot]);
 
   return (
-    <div className="flex flex-col items-center max-w-5xl mx-auto h-full overflow-y-scroll">
+    <div className="flex flex-col items-center max-w-5xl mx-auto h-full overflow-y-scroll overflow-x-hidden">
       <Image src={banner} preview={false} className="rounded-lg" />
       <h1 className="text-5xl font-semibold p-2 mt-3">
         Walk-in Session Slot Booking
