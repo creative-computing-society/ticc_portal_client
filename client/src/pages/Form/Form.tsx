@@ -1,19 +1,19 @@
 import { Button, Checkbox, Col, Image, InputNumber, Row, Select } from "antd";
 import dayjs from "dayjs";
 import banner from "../../assets/banner.png";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Guidlines from "../../components/Form/Guidelines";
 import StepTitle from "../../components/common/StepTitle";
 import { Label } from "../../components/common/Label";
 import Input from "antd/es/input/Input";
 import SlotPicker from "../../components/common/SlotPicker";
+import AuthContext from "../../store/auth-context";
 
 const Form: React.FC = () => {
   // create DayJs object for today and 3 weeks from now
   const [selectedSlot, setSelectedSlot] = useState<dayjs.Dayjs | null>(null);
-  useEffect(() => {
-    console.log(selectedSlot);
-  }, [selectedSlot]);
+
+  const authCtx = useContext(AuthContext);
 
   return (
     <div className="flex flex-col items-center max-w-5xl mx-auto h-full overflow-y-scroll overflow-x-hidden">
@@ -37,7 +37,7 @@ const Form: React.FC = () => {
                 name="email"
                 id="email"
                 size="large"
-                value={"yarora_be20@thapar.edu"}
+                value={authCtx.user?.email}
                 disabled
               />
             </Col>

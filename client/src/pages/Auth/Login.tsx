@@ -1,14 +1,18 @@
 import { Button, Col, Input, Row } from "antd";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { Label } from "../../components/common/Label";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../../config";
+import AuthContext from "../../store/auth-context";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const authCtx = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,17 +22,27 @@ const Login: React.FC = () => {
     };
 
     axios
-      .post(`${API_BASE_URL}/auth/login`, body)
+      .post(`${API_BASE_URL}auth/login/`, body, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((res) => {
         console.log(res.data);
+        authCtx.login({
+          token: res.data.token,
+          userDetails: res.data.user,
+          studentDetails: res.data.student,
+        });
+        navigate("/book");
       })
       .catch((err) => {
         console.log(err);
       });
   };
   return (
-    <div className="flex w-full h-screen flex-col items-center justify-center">
-      <form className="w-full max-w-xl" onSubmit={handleSubmit}>
+    <div className="flex w-full h-screen flex-col items-center justify-center p-3">
+      <form className="w-full max-w-lg" onSubmit={handleSubmit} method="post">
         <Row gutter={[48, 24]} className="mb-4">
           <Col span={24} className="flex flex-col gap-2 items-start">
             <Label htmlFor="email">Email: </Label>
@@ -37,8 +51,9 @@ const Login: React.FC = () => {
               id="email"
               size="large"
               value={email}
+              type="email"
+              required
               onChange={(e) => setEmail(e.target.value)}
-              addonAfter={"@thapar.edu"}
             />
           </Col>
 
@@ -49,6 +64,7 @@ const Login: React.FC = () => {
               id="password"
               size="large"
               value={password}
+              required
               type={showPassword ? "text" : "password"}
               onChange={(e) => setPassword(e.target.value)}
               addonAfter={

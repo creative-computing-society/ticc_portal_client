@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ConfigProvider } from "antd";
 import Form from "./pages/Form/Form";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Auth/Login";
+import AuthContext from "./store/auth-context";
 
 function App() {
+  const authCtx = useContext(AuthContext);
   return (
     <ConfigProvider
       theme={{
@@ -25,16 +27,35 @@ function App() {
       }}
     >
       <Routes>
-        <Route path="/login" element={<Login />}></Route>
         <Route
-          path={"/"}
+          path="/"
           element={
-            <div className="p-6 text-[#333333] h-full w-full">
-              <Form />
-            </div>
+            !!authCtx.token ? <Navigate to="/book" /> : <Navigate to="/login" />
           }
         ></Route>
-        <Route path={"/dashboard/*"} element={<Dashboard />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+        <Route
+          path={"/book"}
+          element={
+            !!authCtx.token ? (
+              <div className="p-6 text-[#333333] h-full w-full">
+                <Form />
+              </div>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        ></Route>
+        <Route
+          path={"/dashboard/*"}
+          element={!!authCtx.token ? <Dashboard /> : <Navigate to="/login" />}
+        ></Route>
+        <Route
+          path="*"
+          element={
+            !!authCtx.token ? <Navigate to="/book" /> : <Navigate to="/login" />
+          }
+        ></Route>
       </Routes>
     </ConfigProvider>
   );
