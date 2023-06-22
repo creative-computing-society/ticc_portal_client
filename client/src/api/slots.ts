@@ -11,19 +11,10 @@ const slotsApi = {
     );
   },
   getSlotById(id: number) {
-    const body = {
-      slot_id: id,
-    };
-    return axiosClient.post(`${BASE_URL}/slotdetails/`, body);
+    return axiosClient.get(`${BASE_URL}/slotdetails?slot_id=${id}`);
   },
   listAllHolidays() {
     return axiosClient.get(`${BASE_URL}/holidays/`);
-  },
-  listHolidayByDate(date: string) {
-    const body = {
-      date: date,
-    };
-    return axiosClient.post(`${BASE_URL}/holidays/`, body);
   },
   addHoliday(date: string, description?: string) {
     const body = {
@@ -33,24 +24,34 @@ const slotsApi = {
     return axiosClient.post(`${BASE_URL}/holidays/`, body);
   },
   deleteHoliday(date: string) {
-    return axiosClient.delete(`${BASE_URL}/holidays/delete?date=${date}`);
+    return axiosClient.delete(`${BASE_URL}/holidays/delete/?date=${date}`);
   },
 
   // TODO: Add leave APIs by slot, date. DEL, GET, POST
 
-  addLeave(userId: number, date: string, description?: string) {
+  addLeaveByDate(userId: number, date: string, description?: string) {
     const body = {
+      method: "by_date",
       counsellor: String(userId),
       date: date,
       description: description,
     };
     return axiosClient.post(`${BASE_URL}/leaves/add/`, body);
   },
-  getLeavesListByConsellor(userId: number) {
-    return axiosClient.get(`${BASE_URL}/leaves?counsellor_id=${userId}`);
+  addLeaveBySlots(userId: number, slots: number[], description?: string) {
+    const body = {
+      method: "by_slot",
+      counsellor: String(userId),
+      slots: slots,
+      description: description,
+    };
+    return axiosClient.post(`${BASE_URL}/leaves/add/`, body);
+  },
+  getLeavesListByConsellor() {
+    return axiosClient.get(`${BASE_URL}/leaves/list/`);
   },
   deleteLeave(leaveId: number) {
-    return axiosClient.delete(`${BASE_URL}/leaves/delete?leave_id=${leaveId}`);
+    return axiosClient.delete(`${BASE_URL}/leaves/delete/?leave_id=${leaveId}`);
   },
 };
 
