@@ -7,7 +7,7 @@ const bookingsApi = {
       slot_id: id,
       additional_info: info,
     };
-    return axiosClient.post(`${BASE_URL}/create`, body);
+    return axiosClient.post(`${BASE_URL}/create/`, body);
   },
   cancelBooking(booking_id: number) {
     return axiosClient.delete(`${BASE_URL}/cancel?booking_id=${booking_id}`);

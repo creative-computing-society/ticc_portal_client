@@ -34,10 +34,10 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
     }
   }, [selectedDate]);
   return (
-    <div className="flex flex-row items-center justify-between">
-      <div className="w-1/2 max-h-[50%] p-1 rounded-xl">
+    <div className="flex flex-col  lg:flex-row lg:items-center lg:justify-between w-full">
+      <div className="lg:w-1/2 w-full max-h-[50%] p-2 lg:p-1 rounded-xl">
         <Calendar
-          fullscreen={true}
+          fullscreen={false}
           className="bg-transparent"
           rootClassName="bg-transparent"
           headerRender={(header) => {
@@ -74,7 +74,7 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
           }}
         />
       </div>
-      <div className="w-1/2 ml-16">
+      <div className="lg:w-1/2 lg:ml-16 w-full p-2">
         <Row gutter={[16, 16]}>
           {slots.map((slot, idx) => {
             return (

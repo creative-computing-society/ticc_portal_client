@@ -12,6 +12,7 @@ import AuthContext from "../../store/auth-context";
 const Form: React.FC = () => {
   // create DayJs object for today and 3 weeks from now
   const [selectedSlot, setSelectedSlot] = useState<dayjs.Dayjs | null>(null);
+  const [consent, setConsent] = useState<boolean>(false);
 
   const authCtx = useContext(AuthContext);
 
@@ -127,14 +128,24 @@ const Form: React.FC = () => {
               />
             </Col>
             <Col span={24} className="">
-              <Checkbox className="text-base mt-4">
+              <Checkbox
+                className="text-base mt-4"
+                value={consent}
+                onChange={() => {
+                  setConsent(!consent);
+                }}
+              >
                 I give consent to share my data with TICC for record purposes. I
                 am aware that I need to visit G-block Room No. 105-104 for the
                 offline session.
               </Checkbox>
             </Col>
             <Col span={24} className="">
-              <Button type="primary" className="bg-sky-400 w-full h-full">
+              <Button
+                type="primary"
+                className="bg-sky-400 w-full h-full"
+                disabled={!consent}
+              >
                 <span className="py-1.5 items-center justify-center text-base font-semibold">
                   Book Appointment
                 </span>

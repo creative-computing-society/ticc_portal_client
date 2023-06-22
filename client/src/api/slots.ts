@@ -3,7 +3,7 @@ const BASE_URL = "slots";
 
 const slotsApi = {
   listAllSlots() {
-    return axiosClient.get(`${BASE_URL}/listslots`);
+    return axiosClient.get(`${BASE_URL}/listslots/`);
   },
   listSlotsByDate(startDate: string, endDate: string) {
     return axiosClient.get(
@@ -14,23 +14,23 @@ const slotsApi = {
     const body = {
       slot_id: id,
     };
-    return axiosClient.post(`${BASE_URL}/slotdetails`, body);
+    return axiosClient.post(`${BASE_URL}/slotdetails/`, body);
   },
   listAllHolidays() {
-    return axiosClient.get(`${BASE_URL}/holidays`);
+    return axiosClient.get(`${BASE_URL}/holidays/`);
   },
   listHolidayByDate(date: string) {
     const body = {
       date: date,
     };
-    return axiosClient.post(`${BASE_URL}/holidays`, body);
+    return axiosClient.post(`${BASE_URL}/holidays/`, body);
   },
   addHoliday(date: string, description?: string) {
     const body = {
       date: date,
       description: description,
     };
-    return axiosClient.post(`${BASE_URL}/holidays`, body);
+    return axiosClient.post(`${BASE_URL}/holidays/`, body);
   },
   deleteHoliday(date: string) {
     return axiosClient.delete(`${BASE_URL}/holidays/delete?date=${date}`);
@@ -44,7 +44,7 @@ const slotsApi = {
       date: date,
       description: description,
     };
-    return axiosClient.post(`${BASE_URL}/leaves/add`, body);
+    return axiosClient.post(`${BASE_URL}/leaves/add/`, body);
   },
   getLeavesListByConsellor(userId: number) {
     return axiosClient.get(`${BASE_URL}/leaves?counsellor_id=${userId}`);

@@ -33,7 +33,10 @@ function App() {
             !!authCtx.token ? <Navigate to="/book" /> : <Navigate to="/login" />
           }
         ></Route>
-        <Route path="/login" element={<Login />}></Route>
+        <Route
+          path="/login"
+          element={!!authCtx.token ? <Navigate to="/book" /> : <Login />}
+        ></Route>
         <Route
           path={"/book"}
           element={
