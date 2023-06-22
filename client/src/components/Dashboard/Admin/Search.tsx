@@ -6,6 +6,39 @@ import { getStudentListBySearchQuery } from "../../../api/query/users";
 import { useQueryClient } from "react-query";
 const { Option } = Select;
 
+const DUMMY_DATA = [
+  {
+    id: 1,
+    user: {
+      id: 2,
+      email: "vibhavgod1@test.com",
+      full_name: "Yashvardhan Arora",
+      phone_number: "9625056985",
+      is_ticc_counsellor: true,
+      is_ticc_manager: false,
+    },
+    roll_number: null,
+    branch: null,
+    admission_year: null,
+    gender: null,
+  },
+  {
+    id: 2,
+    user: {
+      id: 4,
+      email: "student@test.com",
+      full_name: "Student 1",
+      phone_number: "1234567890",
+      is_ticc_counsellor: false,
+      is_ticc_manager: false,
+    },
+    roll_number: "102003772",
+    branch: "COE",
+    admission_year: 2020,
+    gender: "M",
+  },
+];
+
 const SearchBar: React.FC<SelectProps<any>> = ({ placeholder, ...rest }) => {
   const [searchWord, setSearchWord] = useState("");
   const { data, isLoading } = getStudentListBySearchQuery(searchWord);
@@ -40,12 +73,17 @@ const SearchBar: React.FC<SelectProps<any>> = ({ placeholder, ...rest }) => {
         suffixIcon={<SearchOutlined />}
         className="w-full"
       >
-        {data &&
-          data.map((result: any, index: number) => (
-            <Option value={result} label={result} key={index}>
-              {result}
-            </Option>
-          ))}
+        {DUMMY_DATA.map((option, index: number) => (
+          <Option value={option.id} key={index}>
+            <div className="flex flex-row items-center p-2 ">
+              <span className="w-1/3">{option.user.full_name}</span>
+              <span className="w-1/3">{option.user.email}</span>
+              <span className="w-1/3 text-right">
+                {option.user.phone_number}
+              </span>
+            </div>
+          </Option>
+        ))}
       </Select>
     </div>
   );
