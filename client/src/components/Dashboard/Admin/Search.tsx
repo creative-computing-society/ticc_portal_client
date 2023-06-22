@@ -2,17 +2,23 @@ import { InputRef, Select, SelectProps } from "antd";
 import { useEffect, useState } from "react";
 import { SearchOutlined, CloseOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
+import { getStudentListBySearchQuery } from "../../../api/query/users";
+import { useQueryClient } from "react-query";
 const { Option } = Select;
 
 const SearchBar: React.FC<SelectProps<any>> = ({ placeholder, ...rest }) => {
-  const [results, setResults] = useState([
-    "Result 1",
-    "Result 2",
-    "Result 3",
-    "Result 4",
-    "Result 5",
-    "Result 6",
-  ]);
+  const [searchWord, setSearchWord] = useState("");
+  const { data, isLoading } = getStudentListBySearchQuery(searchWord);
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (searchWord.length > 2) {
+      const timer = setTimeout(() => {
+        queryClient.invalidateQueries(["student", "search", searchWord]);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [searchWord]);
 
   const navigate = useNavigate();
 
@@ -24,7 +30,7 @@ const SearchBar: React.FC<SelectProps<any>> = ({ placeholder, ...rest }) => {
         placeholder={placeholder}
         optionFilterProp="children"
         onChange={(e) => console.log(e)}
-        onSearch={(e) => console.log(e)}
+        onSearch={(e) => setSearchWord(e)}
         // filterOption={(input, option) =>
         //   (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
         // }
@@ -34,11 +40,12 @@ const SearchBar: React.FC<SelectProps<any>> = ({ placeholder, ...rest }) => {
         suffixIcon={<SearchOutlined />}
         className="w-full"
       >
-        {results.map((result, index) => (
-          <Option value={result} label={result}>
-            {result}
-          </Option>
-        ))}
+        {data &&
+          data.map((result: any, index: number) => (
+            <Option value={result} label={result} key={index}>
+              {result}
+            </Option>
+          ))}
       </Select>
     </div>
   );

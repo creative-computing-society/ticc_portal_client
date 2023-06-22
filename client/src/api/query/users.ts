@@ -29,8 +29,16 @@ const getStudentDetailsByUserId = (userId: number) =>
   );
 
 const getStudentListBySearchQuery = (searchQuery: string) =>
-  useQuery(["student", "search", searchQuery], () =>
-    usersApi.getStudentListBySearchQuery(searchQuery).then(({ data }) => data)
+  useQuery<any[]>(
+    ["student", "search", searchQuery],
+    () =>
+      usersApi
+        .getStudentListBySearchQuery(searchQuery)
+        .then(({ data }) => data),
+    {
+      enabled: searchQuery.length > 2,
+      staleTime: 1000 * 60 * 5,
+    }
   );
 
 export {

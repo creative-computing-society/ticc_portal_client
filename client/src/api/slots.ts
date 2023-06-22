@@ -7,7 +7,7 @@ const slotsApi = {
   },
   listSlotsByDate(startDate: string, endDate: string) {
     return axiosClient.get(
-      `${BASE_URL}/available_slots?start_date=${startDate}&end_date=${endDate}`
+      `${BASE_URL}/listslots?start_date=${startDate}&end_date=${endDate}`
     );
   },
   getSlotById(id: number) {

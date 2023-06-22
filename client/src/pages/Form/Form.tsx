@@ -8,13 +8,31 @@ import { Label } from "../../components/common/Label";
 import Input from "antd/es/input/Input";
 import SlotPicker from "../../components/common/SlotPicker";
 import AuthContext from "../../store/auth-context";
+import { getSlotsByDate } from "../../api/query/slots";
+import usersApi from "../../api/users";
 
 const Form: React.FC = () => {
   // create DayJs object for today and 3 weeks from now
+  const authCtx = useContext(AuthContext);
+  // const slotsQuery = getSlotsByDate("2023-06-24", "2023-06-29");
+  // console.log(slotsQuery.data);
+
+  // const userData = getLoggedInUserDetails();
+  // console.log(userData.data);
+
+  useEffect(() => {
+    usersApi
+      .getLoggedInUserDetails()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   const [selectedSlot, setSelectedSlot] = useState<dayjs.Dayjs | null>(null);
   const [consent, setConsent] = useState<boolean>(false);
-
-  const authCtx = useContext(AuthContext);
 
   return (
     <div className="flex flex-col items-center max-w-5xl mx-auto h-full overflow-y-scroll overflow-x-hidden">
@@ -130,7 +148,7 @@ const Form: React.FC = () => {
             <Col span={24} className="">
               <Checkbox
                 className="text-base mt-4"
-                value={consent}
+                checked={consent}
                 onChange={() => {
                   setConsent(!consent);
                 }}

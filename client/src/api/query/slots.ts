@@ -27,7 +27,7 @@ const getAllLeavesByCounsellor = () =>
     slotsApi.getLeavesListByConsellor().then(({ data }) => data)
   );
 
-export default {
+export {
   getAllAvailableSlots,
   getSlotsByDate,
   getSlotById,
