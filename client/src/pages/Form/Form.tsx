@@ -10,28 +10,16 @@ import SlotPicker from "../../components/common/SlotPicker";
 import AuthContext from "../../store/auth-context";
 import { getSlotsByDate } from "../../api/query/slots";
 import usersApi from "../../api/users";
+import { getLoggedInUserDetails } from "../../api/query/users";
+import { ISlotObject } from "../../types";
 
 const Form: React.FC = () => {
   // create DayJs object for today and 3 weeks from now
   const authCtx = useContext(AuthContext);
-  // const slotsQuery = getSlotsByDate("2023-06-24", "2023-06-29");
-  // console.log(slotsQuery.data);
 
-  // const userData = getLoggedInUserDetails();
-  // console.log(userData.data);
+  const userData = getLoggedInUserDetails();
 
-  useEffect(() => {
-    usersApi
-      .getLoggedInUserDetails()
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const [selectedSlot, setSelectedSlot] = useState<dayjs.Dayjs | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<ISlotObject | null>(null);
   const [consent, setConsent] = useState<boolean>(false);
 
   return (
@@ -44,14 +32,14 @@ const Form: React.FC = () => {
       <Guidlines />
       <StepTitle number={1}>Select date and time</StepTitle>
       <SlotPicker onSelectSlot={setSelectedSlot} />
-      <StepTitle number={2} className="mt-20">
+      <StepTitle number={2} className="mt-16">
         Fill Personal Information
       </StepTitle>
       <div className="flex w-full flex-col items-center">
         <form className="w-full">
           <Row gutter={[48, 24]} className="mb-4">
             <Col span={12} className="flex flex-row gap-4 items-center">
-              <Label htmlFor="name">Email: </Label>
+              <Label htmlFor="email">Email: </Label>
               <Input
                 name="email"
                 id="email"
@@ -61,11 +49,9 @@ const Form: React.FC = () => {
               />
             </Col>
             <Col span={12} className="flex flex-row gap-2">
-              <Button type="primary" className="bg-sky-400 w-full h-full">
-                <span className="items-center justify-center text-base font-semibold">
-                  Autofill form based on last record
-                </span>
-              </Button>
+              <span className="items-center justify-center text-base font-medium py-2 mx-1 text-center flex-grow bg-sky-400 bg-opacity-10 outline outline-sky-400 rounded-md">
+                First time users must fill this form correctly
+              </span>
             </Col>
 
             <Col span={12} className="flex flex-col gap-2">

@@ -4,9 +4,10 @@ import { columnsAdmins } from "./config";
 import SlotPicker from "../../../components/common/SlotPicker";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { ISlotObject } from "../../../types";
 
 const ManageSlots: React.FC = () => {
-  const [selectedSlot, setSelectedSlot] = useState<dayjs.Dayjs | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<ISlotObject | null>(null);
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
   const [newHoliday, setNewHoliday] = useState<dayjs.Dayjs | null>(null);
 
@@ -53,7 +54,10 @@ const ManageSlots: React.FC = () => {
               onClick={() => {}}
             >
               <span className="py-1.5 items-center justify-center text-base font-semibold">
-                Mark unavailibility at {selectedSlot.format("DD MMM, hh:mm A")}
+                Mark unavailibility at{" "}
+                {dayjs(
+                  selectedSlot.date + " " + selectedSlot.start_time
+                ).format("DD MMM, hh:mm A")}
               </span>
             </Button>
           )}

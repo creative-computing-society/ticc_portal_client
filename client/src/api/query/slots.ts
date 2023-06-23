@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useQuery } from "react-query";
 import slotsApi from "../slots";
+import { ISlotObject } from "../../types";
 
 const getAllAvailableSlots = () =>
   useQuery(["slots", "all"], () =>
@@ -8,7 +9,7 @@ const getAllAvailableSlots = () =>
   );
 
 const getSlotsByDate = (startDate: string, endDate: string) =>
-  useQuery(["slots", "byDate", startDate, endDate], () =>
+  useQuery<ISlotObject[]>(["slots", "byDate", startDate, endDate], () =>
     slotsApi.listSlotsByDate(startDate, endDate).then(({ data }) => data)
   );
 

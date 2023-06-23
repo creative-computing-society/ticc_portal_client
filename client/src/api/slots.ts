@@ -1,4 +1,5 @@
 import { axiosClient } from "../axios";
+import { ISlotObject } from "../types";
 const BASE_URL = "slots";
 
 const slotsApi = {
@@ -6,7 +7,7 @@ const slotsApi = {
     return axiosClient.get(`${BASE_URL}/listslots/`);
   },
   listSlotsByDate(startDate: string, endDate: string) {
-    return axiosClient.get(
+    return axiosClient.get<ISlotObject[]>(
       `${BASE_URL}/listslots?start_date=${startDate}&end_date=${endDate}`
     );
   },
