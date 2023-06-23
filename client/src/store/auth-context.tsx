@@ -1,31 +1,18 @@
-import React, { useState } from "react";
-
-export interface User {
-  id: number;
-  email: string;
-  full_name: string;
-  is_ticc_counsellor: boolean;
-  is_ticc_manager: boolean;
-  phone_number: string;
-}
-
-export interface Student {
-  id: number;
-  roll_number: string | null;
-  branch: string | null;
-  admission_year: number | null;
-  gender: string | null;
-  user: User;
-}
+import React, { useEffect, useState } from "react";
+import {
+  getLoggedInStudentDetails,
+  getLoggedInUserDetails,
+} from "../api/query/users";
+import { IStudentObject, IUserObject } from "../types";
 
 const AuthContext = React.createContext({
   token: null as string | null,
-  user: null as User | null,
-  student: null as Student | null,
+  user: null as IUserObject | null,
+  student: null as IStudentObject | null,
   login: (user: {
     token: string;
-    userDetails: User;
-    studentDetails?: Student;
+    userDetails: IUserObject;
+    studentDetails?: IStudentObject;
   }) => {},
   logout: () => {},
 });
@@ -38,17 +25,31 @@ export const AuthContextProvider = (props: any) => {
   const [token, setToken] = useState<string | null>(
     !!initialToken ? initialToken : null
   );
-  const [user, setUser] = useState<User | null>(
+  const [user, setUser] = useState<IUserObject | null>(
     !!initialUser ? JSON.parse(initialUser) : null
   );
-  const [student, setStudent] = useState<Student | null>(
+  const [student, setStudent] = useState<IStudentObject | null>(
     !!initialStudent ? JSON.parse(initialStudent) : null
   );
 
+  const studentData = getLoggedInStudentDetails();
+  const userData = getLoggedInUserDetails();
+
+  useEffect(() => {
+    if (studentData.data) {
+      setStudent(studentData.data);
+      localStorage.setItem("studentDetails", JSON.stringify(studentData.data));
+    }
+    if (userData.data) {
+      setUser(userData.data);
+      localStorage.setItem("userDetails", JSON.stringify(userData.data));
+    }
+  }, [studentData, userData]);
+
   const loginHandler = (newUser: {
     token: string;
-    userDetails: User;
-    studentDetails?: Student;
+    userDetails: IUserObject;
+    studentDetails?: IStudentObject;
   }) => {
     setToken(newUser.token);
     localStorage.setItem("token", newUser.token);

@@ -1,4 +1,5 @@
 import { axiosClient } from "../axios";
+import { IStudentObject } from "../types";
 const BASE_URL = "student";
 
 const studentsApi = {
@@ -7,7 +8,7 @@ const studentsApi = {
   },
 
   getLoggedInStudentDetails() {
-    return axiosClient.get(`${BASE_URL}/details/`);
+    return axiosClient.get<IStudentObject>(`${BASE_URL}/details/`);
   },
   getStudentDetailsByUserId(userId: number) {
     return axiosClient.get(`${BASE_URL}/details?user_id=${userId}`);

@@ -1,9 +1,10 @@
 import { axiosClient } from "../axios";
+import { IUserObject } from "../types";
 const BASE_URL = "user";
 
 const usersApi = {
   getLoggedInUserDetails() {
-    return axiosClient.get(`${BASE_URL}details/`);
+    return axiosClient.get<IUserObject>(`${BASE_URL}details/`);
   },
   updatePhoneNumber(phoneNumber: string) {
     return axiosClient.patch(`auth/update/`, { phone_number: phoneNumber });
