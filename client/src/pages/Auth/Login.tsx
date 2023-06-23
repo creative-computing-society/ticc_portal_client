@@ -34,6 +34,8 @@ const Login: React.FC = () => {
           userDetails: res.data.user,
           studentDetails: res.data.student,
         });
+      })
+      .then(() => {
         navigate("/book");
       })
       .catch((err) => {

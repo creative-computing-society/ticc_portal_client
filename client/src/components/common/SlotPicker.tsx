@@ -26,6 +26,8 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
     const slots = data.filter((slot) => {
       return slot.date === selectedDate.format("YYYY-MM-DD");
     });
+    setSelectedSlot(null);
+    onSelectSlot(null);
 
     setFilteredSlots(slots);
   }, [selectedDate, data]);
@@ -113,7 +115,7 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
                       <span className="py-1.5 text-base font-semibold">
                         {currentSlot.format("hh:mm A")}
                       </span>
-                      <span className="text-xs text-gray-500 font-normal ml-1">
+                      <span className="text-xs font-normal ml-1">
                         ({slot.slots_booked}/{slot.capacity})
                       </span>
                     </Button>

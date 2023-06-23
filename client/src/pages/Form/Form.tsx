@@ -1,5 +1,4 @@
 import { Button, Checkbox, Col, Image, InputNumber, Row, Select } from "antd";
-import dayjs from "dayjs";
 import banner from "../../assets/banner.png";
 import { useContext, useEffect, useState } from "react";
 import Guidlines from "../../components/Form/Guidelines";
@@ -8,19 +7,78 @@ import { Label } from "../../components/common/Label";
 import Input from "antd/es/input/Input";
 import SlotPicker from "../../components/common/SlotPicker";
 import AuthContext from "../../store/auth-context";
-import { getSlotsByDate } from "../../api/query/slots";
-import usersApi from "../../api/users";
-import { getLoggedInUserDetails } from "../../api/query/users";
-import { ISlotObject } from "../../types";
+import { getLoggedInStudentDetails } from "../../api/query/users";
+import { ISlotObject, IStudentObject } from "../../types";
+import {
+  updatePhoneNumber,
+  updateStudentDetails,
+} from "../../api/mutations/users";
+import { useQueryClient } from "react-query";
+import TextArea from "antd/es/input/TextArea";
 
 const Form: React.FC = () => {
-  // create DayJs object for today and 3 weeks from now
   const authCtx = useContext(AuthContext);
+  const queryClient = useQueryClient();
+  const { data } = getLoggedInStudentDetails();
 
-  const userData = getLoggedInUserDetails();
-
+  const [studentData, setStudentData] = useState<IStudentObject>({
+    id: data?.id || 0,
+    user: {
+      id: data?.user.id || 0,
+      email: data?.user.email || "",
+      full_name: data?.user.full_name || "",
+      phone_number: data?.user.phone_number || "",
+      is_ticc_manager: data?.user.is_ticc_manager || false,
+      is_ticc_counsellor: data?.user.is_ticc_counsellor || false,
+    },
+    roll_number: data?.roll_number || "",
+    branch: data?.branch || "",
+    admission_year: data?.admission_year || 0,
+    gender: data?.gender || "",
+  });
+  const [phoneNumber, setPhoneNumber] = useState<string>(
+    data?.user.phone_number || ""
+  );
+  const [info, setInfo] = useState<string>("");
   const [selectedSlot, setSelectedSlot] = useState<ISlotObject | null>(null);
   const [consent, setConsent] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!data) return;
+    setStudentData(data);
+    setPhoneNumber(data.user.phone_number);
+  }, [data]);
+
+  const studentDataChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStudentData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = () => {
+    // check if phone number has been changed
+    // if yes, then update the phone number
+    // if no, then just update the student details
+    if (!data) return;
+    // check if any field in studentData is empty, if yes, then return
+    if (Object.values(studentData).some((value) => value === "")) return;
+    if (!selectedSlot || !consent) return;
+    if (!phoneNumber) return;
+
+    if (phoneNumber !== data.user.phone_number) {
+      updatePhoneNumber(queryClient, phoneNumber);
+    }
+
+    if (data.roll_number === null) {
+      updateStudentDetails(queryClient, {
+        roll_number: studentData.roll_number || undefined,
+        branch: studentData.branch || undefined,
+        admission_year: studentData.admission_year || undefined,
+        gender: studentData.gender || undefined,
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col items-center max-w-5xl mx-auto h-full overflow-y-scroll overflow-x-hidden">
@@ -61,18 +119,24 @@ const Form: React.FC = () => {
                 id="name"
                 size="large"
                 placeholder="Joe Smith"
+                disabled={!!data?.user.full_name}
+                value={data?.user.full_name}
               />
             </Col>
             <Col span={12} className="flex flex-col gap-2">
-              <Label htmlFor="rollno">Roll Number | TIET Application No</Label>
-              <InputNumber
-                max={999999999}
+              <Label htmlFor="roll_number">
+                Roll Number | TIET Application No
+              </Label>
+              <Input
                 maxLength={9}
-                name="rollno"
-                id="rollno"
+                name="roll_number"
+                id="roll_number"
                 size="large"
                 className="w-full"
                 placeholder="XXXXXXXXX"
+                disabled={!!data?.roll_number}
+                value={studentData?.roll_number || ""}
+                onChange={studentDataChangeHandler}
               />
             </Col>
             <Col span={12} className="flex flex-col gap-2">
@@ -82,18 +146,27 @@ const Form: React.FC = () => {
                 id="branch"
                 size="large"
                 placeholder="COE, COPC, ENC.."
+                value={studentData?.branch || ""}
+                onChange={studentDataChangeHandler}
               />
             </Col>
             <Col span={12} className="flex flex-col gap-2">
-              <Label htmlFor="year">Year of Study</Label>
+              <Label htmlFor="admission_year">Year of Admission</Label>
               <InputNumber
-                max={4}
-                maxLength={1}
-                name="year"
-                id="year"
+                maxLength={4}
+                name="admission_year"
+                id="admission_year"
                 size="large"
                 className="w-full"
-                placeholder="2"
+                placeholder="2021"
+                disabled={!!data?.roll_number}
+                value={studentData?.admission_year}
+                onChange={(value) =>
+                  setStudentData((prev) => ({
+                    ...prev,
+                    admission_year: value,
+                  }))
+                }
               />
             </Col>
             <Col span={12} className="flex flex-col gap-2">
@@ -116,19 +189,39 @@ const Form: React.FC = () => {
                     label: "Other",
                   },
                 ]}
+                disabled={!!data?.roll_number}
+                value={studentData?.gender}
+                onChange={(value) =>
+                  setStudentData((prev) => ({
+                    ...prev,
+                    gender: value,
+                  }))
+                }
               ></Select>
             </Col>
             <Col span={12} className="flex flex-col gap-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <InputNumber
+              <Label htmlFor="phone_number">Phone Number</Label>
+              <Input
                 addonBefore="+91"
-                max={9999999999}
                 maxLength={10}
-                name="phone"
-                id="phone"
+                name="phone_number"
+                id="phone_number"
                 size="large"
                 className="w-full"
                 placeholder="XXXXXXXXXX"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+            </Col>
+            <Col span={24} className="flex flex-col gap-2">
+              <Label htmlFor="info">Additional Info</Label>
+              <TextArea
+                placeholder="Write any additional information here..."
+                rows={3}
+                id="info"
+                name="info"
+                value={info}
+                onChange={(e) => setInfo(e.target.value)}
               />
             </Col>
             <Col span={24} className="">
@@ -148,7 +241,7 @@ const Form: React.FC = () => {
               <Button
                 type="primary"
                 className="bg-sky-400 w-full h-full"
-                disabled={!consent}
+                disabled={!consent || !selectedSlot}
               >
                 <span className="py-1.5 items-center justify-center text-base font-semibold">
                   Book Appointment
