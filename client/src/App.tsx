@@ -5,6 +5,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Auth/Login";
 import AuthContext from "./store/auth-context";
+import Logout from "./pages/Auth/Logout";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -36,6 +37,10 @@ function App() {
         <Route
           path="/login"
           element={!!authCtx.token ? <Navigate to="/book" /> : <Login />}
+        ></Route>
+        <Route
+          path="/logout"
+          element={!!authCtx.token ? <Logout /> : <Navigate to="/login" />}
         ></Route>
         <Route
           path={"/book"}
