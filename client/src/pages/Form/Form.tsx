@@ -1,4 +1,13 @@
-import { Button, Checkbox, Col, Image, InputNumber, Row, Select } from "antd";
+import {
+  Button,
+  Checkbox,
+  Col,
+  Image,
+  InputNumber,
+  Row,
+  Select,
+  notification,
+} from "antd";
 import banner from "../../assets/banner.png";
 import { useContext, useEffect, useState } from "react";
 import Guidlines from "../../components/Form/Guidelines";
@@ -15,21 +24,24 @@ import {
 } from "../../api/mutations/users";
 import { useQueryClient } from "react-query";
 import TextArea from "antd/es/input/TextArea";
+import { bookSlot } from "../../api/mutations/bookings";
 
 const Form: React.FC = () => {
   const authCtx = useContext(AuthContext);
   const queryClient = useQueryClient();
+
+  // Query
   const { data } = getLoggedInStudentDetails();
 
   const [studentData, setStudentData] = useState<IStudentObject>({
     id: data?.id || 0,
     user: {
-      id: data?.user.id || 0,
-      email: data?.user.email || "",
-      full_name: data?.user.full_name || "",
-      phone_number: data?.user.phone_number || "",
-      is_ticc_manager: data?.user.is_ticc_manager || false,
-      is_ticc_counsellor: data?.user.is_ticc_counsellor || false,
+      id: data?.user?.id || 0,
+      email: data?.user?.email || "",
+      full_name: data?.user?.full_name || "",
+      phone_number: data?.user?.phone_number || "",
+      is_ticc_manager: data?.user?.is_ticc_manager || false,
+      is_ticc_counsellor: data?.user?.is_ticc_counsellor || false,
     },
     roll_number: data?.roll_number || "",
     branch: data?.branch || "",
@@ -37,7 +49,7 @@ const Form: React.FC = () => {
     gender: data?.gender || "",
   });
   const [phoneNumber, setPhoneNumber] = useState<string>(
-    data?.user.phone_number || ""
+    data?.user?.phone_number || ""
   );
   const [info, setInfo] = useState<string>("");
   const [selectedSlot, setSelectedSlot] = useState<ISlotObject | null>(null);
@@ -48,6 +60,26 @@ const Form: React.FC = () => {
     setStudentData(data);
     setPhoneNumber(data.user.phone_number);
   }, [data]);
+
+  //mutations
+  const { mutate: mutateUpdatePhoneNumber } = updatePhoneNumber(
+    queryClient,
+    phoneNumber
+  );
+  const { mutate: mutateUpdateStudentDetails } = updateStudentDetails(
+    queryClient,
+    {
+      roll_number: studentData.roll_number || undefined,
+      branch: studentData.branch || undefined,
+      admission_year: studentData.admission_year || undefined,
+      gender: studentData.gender || undefined,
+    }
+  );
+  const { mutate: mutateBookSlot, data: bookingData } = bookSlot(
+    queryClient,
+    selectedSlot?.id || 0,
+    info
+  );
 
   const studentDataChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStudentData((prev) => ({
@@ -67,17 +99,22 @@ const Form: React.FC = () => {
     if (!phoneNumber) return;
 
     if (phoneNumber !== data.user.phone_number) {
-      updatePhoneNumber(queryClient, phoneNumber);
-    }
-
-    if (data.roll_number === null) {
-      updateStudentDetails(queryClient, {
-        roll_number: studentData.roll_number || undefined,
-        branch: studentData.branch || undefined,
-        admission_year: studentData.admission_year || undefined,
-        gender: studentData.gender || undefined,
+      mutateUpdatePhoneNumber(undefined, {
+        onSuccess: () => {
+          authCtx.refresh();
+        },
       });
     }
+
+    if (data.roll_number === null || data.branch !== studentData.branch) {
+      mutateUpdateStudentDetails(undefined, {
+        onSuccess: () => {
+          authCtx.refresh();
+        },
+      });
+    }
+
+    mutateBookSlot();
   };
 
   return (
@@ -104,6 +141,7 @@ const Form: React.FC = () => {
                 size="large"
                 value={authCtx.user?.email}
                 disabled
+                required
               />
             </Col>
             <Col span={12} className="flex flex-row gap-2">
@@ -121,6 +159,7 @@ const Form: React.FC = () => {
                 placeholder="Joe Smith"
                 disabled={!!data?.user.full_name}
                 value={data?.user.full_name}
+                required
               />
             </Col>
             <Col span={12} className="flex flex-col gap-2">
@@ -137,6 +176,7 @@ const Form: React.FC = () => {
                 disabled={!!data?.roll_number}
                 value={studentData?.roll_number || ""}
                 onChange={studentDataChangeHandler}
+                required
               />
             </Col>
             <Col span={12} className="flex flex-col gap-2">
@@ -148,6 +188,7 @@ const Form: React.FC = () => {
                 placeholder="COE, COPC, ENC.."
                 value={studentData?.branch || ""}
                 onChange={studentDataChangeHandler}
+                required
               />
             </Col>
             <Col span={12} className="flex flex-col gap-2">
@@ -167,6 +208,7 @@ const Form: React.FC = () => {
                     admission_year: value,
                   }))
                 }
+                required
               />
             </Col>
             <Col span={12} className="flex flex-col gap-2">
@@ -211,12 +253,13 @@ const Form: React.FC = () => {
                 placeholder="XXXXXXXXXX"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
+                required
               />
             </Col>
             <Col span={24} className="flex flex-col gap-2">
-              <Label htmlFor="info">Additional Info</Label>
+              <Label htmlFor="info">Additional Info (optional)</Label>
               <TextArea
-                placeholder="Write any additional information here..."
+                placeholder="Write any additional message for the counsellor here..."
                 rows={3}
                 id="info"
                 name="info"
@@ -242,6 +285,7 @@ const Form: React.FC = () => {
                 type="primary"
                 className="bg-sky-400 w-full h-full"
                 disabled={!consent || !selectedSlot}
+                onClick={handleSubmit}
               >
                 <span className="py-1.5 items-center justify-center text-base font-semibold">
                   Book Appointment

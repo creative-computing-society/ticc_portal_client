@@ -14,6 +14,7 @@ const AuthContext = React.createContext({
     userDetails: IUserObject;
     studentDetails?: IStudentObject;
   }) => {},
+  refresh: () => {},
   logout: () => {},
 });
 
@@ -32,19 +33,19 @@ export const AuthContextProvider = (props: any) => {
     !!initialStudent ? JSON.parse(initialStudent) : null
   );
 
-  const studentData = getLoggedInStudentDetails();
-  const userData = getLoggedInUserDetails();
+  // const studentData = getLoggedInStudentDetails();
+  // const userData = getLoggedInUserDetails();
 
-  useEffect(() => {
-    if (studentData.data) {
-      setStudent(studentData.data);
-      localStorage.setItem("studentDetails", JSON.stringify(studentData.data));
-    }
-    if (userData.data) {
-      setUser(userData.data);
-      localStorage.setItem("userDetails", JSON.stringify(userData.data));
-    }
-  }, [studentData, userData]);
+  // useEffect(() => {
+  //   if (studentData.data) {
+  //     setStudent(studentData.data);
+  //     localStorage.setItem("studentDetails", JSON.stringify(studentData.data));
+  //   }
+  //   if (userData.data) {
+  //     setUser(userData.data);
+  //     localStorage.setItem("userDetails", JSON.stringify(userData.data));
+  //   }
+  // }, [studentData, userData]);
 
   const loginHandler = (newUser: {
     token: string;
@@ -68,6 +69,19 @@ export const AuthContextProvider = (props: any) => {
     }
   };
 
+  const refreshHandler = () => {
+    const user = getLoggedInUserDetails();
+    const student = getLoggedInStudentDetails();
+    if (user.data) {
+      setUser(user.data);
+      localStorage.setItem("userDetails", JSON.stringify(user.data));
+    }
+    if (student.data) {
+      setStudent(student.data);
+      localStorage.setItem("studentDetails", JSON.stringify(student.data));
+    }
+  };
+
   const logoutHandler = () => {
     setToken(null);
     setUser(null);
@@ -82,6 +96,7 @@ export const AuthContextProvider = (props: any) => {
     user: user,
     student: student,
     login: loginHandler,
+    refresh: refreshHandler,
     logout: logoutHandler,
   };
 

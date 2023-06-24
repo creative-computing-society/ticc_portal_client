@@ -14,6 +14,7 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
   const [selectedSlot, setSelectedSlot] = useState<ISlotObject | null>(null);
   const [filteredSlots, setFilteredSlots] = useState<ISlotObject[]>([]);
+  const [isWeekend, setIsWeekend] = useState<boolean>(false);
 
   const { data, isLoading } = getSlotsByDate(
     startDate.format("YYYY-MM-DD"),
@@ -23,9 +24,20 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
   useEffect(() => {
     if (!data) return;
 
-    const slots = data.filter((slot) => {
-      return slot.date === selectedDate.format("YYYY-MM-DD");
-    });
+    setIsWeekend(false);
+
+    const slots = data
+      .filter((slot) => {
+        return slot.date === selectedDate.format("YYYY-MM-DD");
+      })
+      .sort((a, b) => {
+        return a.id - b.id;
+      });
+
+    if (selectedDate.day() === 6 || selectedDate.day() === 0) {
+      setIsWeekend(true);
+    }
+
     setSelectedSlot(null);
     onSelectSlot(null);
 
@@ -77,52 +89,58 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
           />
         </div>
         <div className="lg:w-1/2 lg:ml-16 w-full p-2">
-          <Row gutter={[16, 16]}>
-            {filteredSlots
-              .filter((slot) => {
-                return slot.date === selectedDate.format("YYYY-MM-DD");
-              })
-              .map((slot, idx) => {
-                const currentSlot = dayjs(slot.date + " " + slot.start_time);
-                const selectedSlotDayjs = dayjs(
-                  selectedSlot?.date + " " + selectedSlot?.start_time
-                );
-                return (
-                  <Col span={12} key={idx}>
-                    <Button
-                      className="w-full h-full bg-[unset] flex flex-row items-center justify-center"
-                      type={
-                        currentSlot.isSame(selectedSlotDayjs, "seconds")
-                          ? "primary"
-                          : "default"
-                      }
-                      style={{
-                        backgroundColor: currentSlot.isSame(
-                          selectedSlotDayjs,
-                          "seconds"
-                        )
-                          ? "#38bdf8"
-                          : "#fff",
-                      }}
-                      onClick={() => {
-                        setSelectedSlot(slot);
-                        onSelectSlot(slot);
-                      }}
-                      disabled={
-                        !slot.isAvailable || currentSlot.isBefore(dayjs())
-                      }
-                    >
-                      <span className="py-1.5 text-base font-semibold">
-                        {currentSlot.format("hh:mm A")}
-                      </span>
-                      <span className="text-xs font-normal ml-1">
-                        ({slot.slots_booked}/{slot.capacity})
-                      </span>
-                    </Button>
-                  </Col>
-                );
-              })}
-          </Row>
+          {isWeekend ? (
+            <div className="text-center text-lg font-semibold text-red-500">
+              No slots available on weekends
+            </div>
+          ) : (
+            <Row gutter={[16, 16]}>
+              {filteredSlots
+                .filter((slot) => {
+                  return slot.date === selectedDate.format("YYYY-MM-DD");
+                })
+                .map((slot, idx) => {
+                  const currentSlot = dayjs(slot.date + " " + slot.start_time);
+                  const selectedSlotDayjs = dayjs(
+                    selectedSlot?.date + " " + selectedSlot?.start_time
+                  );
+                  return (
+                    <Col span={12} key={idx}>
+                      <Button
+                        className="w-full h-full bg-[unset] flex flex-row items-center justify-center"
+                        type={
+                          currentSlot.isSame(selectedSlotDayjs, "seconds")
+                            ? "primary"
+                            : "default"
+                        }
+                        style={{
+                          backgroundColor: currentSlot.isSame(
+                            selectedSlotDayjs,
+                            "seconds"
+                          )
+                            ? "#38bdf8"
+                            : "#fff",
+                        }}
+                        onClick={() => {
+                          setSelectedSlot(slot);
+                          onSelectSlot(slot);
+                        }}
+                        disabled={
+                          !slot.isAvailable || currentSlot.isBefore(dayjs())
+                        }
+                      >
+                        <span className="py-1.5 text-base font-semibold">
+                          {currentSlot.format("hh:mm A")}
+                        </span>
+                        <span className="text-xs font-normal ml-1">
+                          ({slot.slots_booked}/{slot.capacity})
+                        </span>
+                      </Button>
+                    </Col>
+                  );
+                })}
+            </Row>
+          )}
         </div>
       </div>
       <span className="text-sm text-gray-600 mt-4">

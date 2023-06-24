@@ -12,6 +12,9 @@ const bookingsApi = {
   cancelBooking(booking_id: number) {
     return axiosClient.delete(`${BASE_URL}/cancel?booking_id=${booking_id}`);
   },
+  getBookingDetailsByBookingId(booking_id: number) {
+    return axiosClient.get(`${BASE_URL}/details?booking_id=${booking_id}`);
+  },
 };
 
 export default bookingsApi;
