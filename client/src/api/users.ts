@@ -1,5 +1,5 @@
 import { axiosClient } from "../axios";
-import { IUserObject } from "../types";
+import { IStudentObject, IUserObject } from "../types";
 const BASE_URL = "user";
 
 const usersApi = {
@@ -16,7 +16,9 @@ const usersApi = {
     return axiosClient.get(`${BASE_URL}details?user_id=${userId}`);
   },
   getStudentListBySearchQuery(searchQuery: string) {
-    return axiosClient.get(`search?searchWord=${searchQuery}`);
+    return axiosClient.get<IStudentObject[]>(
+      `search?searchWord=${searchQuery}`
+    );
   },
 };
 

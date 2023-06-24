@@ -1,6 +1,7 @@
 import { Progress, Tabs, Tooltip } from "antd";
 import { tabItems } from "./config";
 import SearchBar from "../../../components/Dashboard/Admin/Search";
+import { useNavigate } from "react-router-dom";
 
 const AdminHome: React.FC = () => {
   const overviewData = {
@@ -9,6 +10,8 @@ const AdminHome: React.FC = () => {
     completed: 5,
     cancelled: 2,
   };
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col w-full pr-8">
       <h1 className="text-5xl font-semibold mb-8">Overview</h1>
@@ -48,7 +51,12 @@ const AdminHome: React.FC = () => {
           strokeLinecap="square"
         />
       </Tooltip>
-      <SearchBar placeholder="Search student by email or name" />
+      <SearchBar
+        placeholder="Search student by email or name"
+        onSelect={(value) => {
+          navigate(`/dashboard/students/${value}`);
+        }}
+      />
       <div className="mt-8">
         <Tabs
           defaultActiveKey="1"

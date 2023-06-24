@@ -29,15 +29,15 @@ const getStudentDetailsByUserId = (userId: number) =>
   );
 
 const getStudentListBySearchQuery = (searchQuery: string) =>
-  useQuery<any[]>(
+  useQuery(
     ["student", "search", searchQuery],
     () =>
       usersApi
         .getStudentListBySearchQuery(searchQuery)
         .then(({ data }) => data),
     {
-      enabled: searchQuery.length > 2,
-      staleTime: 1000 * 60 * 5,
+      enabled: searchQuery.length > 0,
+      staleTime: 1000 * 60 * 2,
     }
   );
 
