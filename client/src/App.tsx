@@ -36,7 +36,17 @@ function App() {
         ></Route>
         <Route
           path="/login"
-          element={!!authCtx.token ? <Navigate to="/book" /> : <Login />}
+          element={
+            !!authCtx.token ? (
+              authCtx.user?.is_ticc_counsellor ? (
+                <Navigate to={"/dashboard"} />
+              ) : (
+                <Navigate to="/book" />
+              )
+            ) : (
+              <Login />
+            )
+          }
         ></Route>
         <Route
           path="/logout"
@@ -45,7 +55,7 @@ function App() {
         <Route
           path={"/book"}
           element={
-            !!authCtx.token ? (
+            !!authCtx.token && !authCtx.user?.is_ticc_counsellor ? (
               <div className="p-6 text-[#333333] h-full w-full">
                 <Form />
               </div>

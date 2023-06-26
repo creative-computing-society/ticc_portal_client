@@ -2,6 +2,7 @@
 import { useQuery } from "react-query";
 import usersApi from "../users";
 import studentsApi from "../students";
+import { IUserObject } from "../../types";
 
 const getLoggedInUserDetails = (authCtx: {
   refresh: () => void;
@@ -28,6 +29,7 @@ const getLoggedInUserDetails = (authCtx: {
 const getLoggedInStudentDetails = (authCtx: {
   refresh: () => void;
   token: string | null;
+  user: IUserObject | null;
 }) =>
   useQuery(
     ["student", "details"],
@@ -43,7 +45,7 @@ const getLoggedInStudentDetails = (authCtx: {
           return data;
         }),
     {
-      enabled: !!authCtx.token,
+      enabled: !!authCtx.token && !authCtx.user!.is_ticc_counsellor,
     }
   );
 

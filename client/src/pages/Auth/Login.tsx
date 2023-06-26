@@ -37,7 +37,9 @@ const Login: React.FC = () => {
       })
       .then(() => {
         setTimeout(() => {
-          navigate("/book");
+          authCtx.user?.is_ticc_counsellor
+            ? navigate("/dashboard")
+            : navigate("/book");
         }, 1000);
       })
       .catch((err) => {
