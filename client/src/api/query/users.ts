@@ -7,34 +7,44 @@ const getLoggedInUserDetails = (authCtx: {
   refresh: () => void;
   token: string | null;
 }) =>
-  useQuery(["user", "details", authCtx.token], () =>
-    usersApi
-      .getLoggedInUserDetails()
-      .then(({ data }) => {
-        localStorage.setItem("userDetails", JSON.stringify(data));
-        return data;
-      })
-      .then((data) => {
-        authCtx.refresh();
-        return data;
-      })
+  useQuery(
+    ["user", "details"],
+    () =>
+      usersApi
+        .getLoggedInUserDetails()
+        .then(({ data }) => {
+          localStorage.setItem("userDetails", JSON.stringify(data));
+          return data;
+        })
+        .then((data) => {
+          authCtx.refresh();
+          return data;
+        }),
+    {
+      enabled: !!authCtx.token,
+    }
   );
 
 const getLoggedInStudentDetails = (authCtx: {
   refresh: () => void;
   token: string | null;
 }) =>
-  useQuery(["student", "details", authCtx.token], () =>
-    studentsApi
-      .getLoggedInStudentDetails()
-      .then(({ data }) => {
-        localStorage.setItem("studentDetails", JSON.stringify(data));
-        return data;
-      })
-      .then((data) => {
-        authCtx.refresh();
-        return data;
-      })
+  useQuery(
+    ["student", "details"],
+    () =>
+      studentsApi
+        .getLoggedInStudentDetails()
+        .then(({ data }) => {
+          localStorage.setItem("studentDetails", JSON.stringify(data));
+          return data;
+        })
+        .then((data) => {
+          authCtx.refresh();
+          return data;
+        }),
+    {
+      enabled: !!authCtx.token,
+    }
   );
 
 const getUserDetailsByUserId = (userId: number) =>

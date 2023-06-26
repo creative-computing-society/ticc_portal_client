@@ -5,6 +5,7 @@ import {
 } from "../api/query/users";
 import { IStudentObject, IUserObject } from "../types";
 import { QueryClient } from "react-query";
+import { axiosClient } from "../axios";
 
 const AuthContext = React.createContext({
   token: null as string | null,
@@ -34,20 +35,6 @@ export const AuthContextProvider = (props: any) => {
     !!initialStudent ? JSON.parse(initialStudent) : null
   );
 
-  // const studentData = getLoggedInStudentDetails();
-  // const userData = getLoggedInUserDetails();
-
-  // useEffect(() => {
-  //   if (studentData.data) {
-  //     setStudent(studentData.data);
-  //     localStorage.setItem("studentDetails", JSON.stringify(studentData.data));
-  //   }
-  //   if (userData.data) {
-  //     setUser(userData.data);
-  //     localStorage.setItem("userDetails", JSON.stringify(userData.data));
-  //   }
-  // }, [studentData, userData]);
-
   const loginHandler = (newUser: {
     token: string;
     userDetails: IUserObject;
@@ -59,8 +46,6 @@ export const AuthContextProvider = (props: any) => {
     setUser(newUser.userDetails);
     localStorage.setItem("userDetails", JSON.stringify(newUser.userDetails));
 
-    console.log(newUser.studentDetails);
-
     if (newUser.studentDetails) {
       setStudent(newUser.studentDetails);
       localStorage.setItem(
@@ -68,6 +53,9 @@ export const AuthContextProvider = (props: any) => {
         JSON.stringify(newUser.studentDetails)
       );
     }
+
+    // VVV IMP, else AXIOS Instance uses previous token after re-login in same session. manual reload fixes it.
+    axiosClient.defaults.headers.Authorization = `Bearer ${newUser.token}`;
   };
 
   const refreshHandler = () => {
@@ -89,8 +77,7 @@ export const AuthContextProvider = (props: any) => {
     localStorage.removeItem("userDetails");
     localStorage.removeItem("token");
     localStorage.removeItem("studentDetails");
-    queryClient.invalidateQueries(["user", "details"]);
-    queryClient.invalidateQueries(["student", "details"]);
+    queryClient.clear();
   };
 
   const contextValue = {
