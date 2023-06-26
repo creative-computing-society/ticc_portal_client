@@ -1,6 +1,8 @@
 import { Space, TabsProps, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
 import DashTable from "../../../components/Dashboard/Admin/Table";
+import dayjs from "dayjs";
+import BookingsTable from "../../../components/Dashboard/Admin/BookingsTable";
 
 type Status = "pending" | "completed" | "cancelled";
 const statusTagColor: {
@@ -60,6 +62,31 @@ export const columns: ColumnsType<IDataType> = [
 ];
 
 export const columnsAll: ColumnsType<IDataType> = [
+  ...columns,
+  {
+    title: "Date",
+    dataIndex: "date",
+    key: "date",
+  },
+  {
+    title: "Action",
+    key: "action",
+    render: (_, record) => {
+      return record.status === "pending" ? (
+        <Space size="middle">
+          <span>Mark as attended</span>
+          <span>Absent</span>
+        </Space>
+      ) : record.status === "completed" ? (
+        <span>Attended by {record.counsellor}</span>
+      ) : (
+        <span>Absent</span>
+      );
+    },
+  },
+];
+
+export const columnsToday: ColumnsType<IDataType> = [
   ...columns,
   {
     title: "Status",
@@ -138,20 +165,50 @@ export const columnsAdmins: ColumnsType<IDataType> = [
   },
 ];
 
+const today = dayjs();
+
 export const tabItems: TabsProps["items"] = [
   {
     key: "1",
-    label: `All Sessions`,
-    children: <DashTable columns={columnsAll} dataSource={[]} />,
+    label: `Sessions Today`,
+    children: (
+      <BookingsTable
+        columns={columnsToday}
+        params={{
+          date: today.format("YYYY-MM-DD"),
+        }}
+      />
+    ),
   },
   {
     key: "2",
     label: `Pending Sessions`,
-    children: <DashTable columns={columnsPending} dataSource={[]} />,
+    children: (
+      <BookingsTable
+        columns={columnsPending}
+        params={{
+          date: today.format("YYYY-MM-DD"),
+          isActive: true,
+        }}
+      />
+    ),
   },
   {
     key: "3",
     label: `Completed Sessions`,
-    children: <DashTable columns={columnsCompleted} dataSource={[]} />,
+    children: (
+      <BookingsTable
+        columns={columnsCompleted}
+        params={{
+          date: today.format("YYYY-MM-DD"),
+          isActive: false,
+        }}
+      />
+    ),
+  },
+  {
+    key: "4",
+    label: `All Upcoming Sessions`,
+    children: <BookingsTable columns={columnsAll} params={{}} />,
   },
 ];

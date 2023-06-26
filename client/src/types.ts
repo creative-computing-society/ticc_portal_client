@@ -1,3 +1,14 @@
+export interface IBookingObject {
+  id: number;
+  slot: ISlotObject;
+  student: number;
+  student_email: string;
+  additional_info: string;
+  is_active: boolean;
+  remarks: string;
+  assigned_counsellor: number;
+}
+
 export interface ISlotObject {
   capacity: number;
   date: string;

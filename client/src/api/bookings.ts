@@ -15,6 +15,23 @@ const bookingsApi = {
   getBookingDetailsByBookingId(booking_id: number) {
     return axiosClient.get(`${BASE_URL}/details?booking_id=${booking_id}`);
   },
+  getBookingsListByCounsellor(
+    userId?: number,
+    isActive?: boolean,
+    date?: string
+  ) {
+    const query = `?`;
+    if (userId) {
+      query.concat(`user_id=${userId}&`);
+    }
+    if (isActive) {
+      query.concat(`is_active=${isActive}&`);
+    }
+    if (date) {
+      query.concat(`date=${date}`);
+    }
+    return axiosClient.get(`${BASE_URL}/list/${query}`);
+  },
 };
 
 export default bookingsApi;

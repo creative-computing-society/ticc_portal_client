@@ -17,7 +17,7 @@ const usersApi = {
   },
   getStudentListBySearchQuery(searchQuery: string) {
     return axiosClient.get<IStudentObject[]>(
-      `search?searchWord=${searchQuery}`
+      `search/?searchWord=${searchQuery}`
     );
   },
 };
