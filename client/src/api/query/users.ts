@@ -3,14 +3,38 @@ import { useQuery } from "react-query";
 import usersApi from "../users";
 import studentsApi from "../students";
 
-const getLoggedInUserDetails = () =>
-  useQuery(["user", "details"], () =>
-    usersApi.getLoggedInUserDetails().then(({ data }) => data)
+const getLoggedInUserDetails = (authCtx: {
+  refresh: () => void;
+  token: string | null;
+}) =>
+  useQuery(["user", "details", authCtx.token], () =>
+    usersApi
+      .getLoggedInUserDetails()
+      .then(({ data }) => {
+        localStorage.setItem("userDetails", JSON.stringify(data));
+        return data;
+      })
+      .then((data) => {
+        authCtx.refresh();
+        return data;
+      })
   );
 
-const getLoggedInStudentDetails = () =>
-  useQuery(["student", "details"], () =>
-    studentsApi.getLoggedInStudentDetails().then(({ data }) => data)
+const getLoggedInStudentDetails = (authCtx: {
+  refresh: () => void;
+  token: string | null;
+}) =>
+  useQuery(["student", "details", authCtx.token], () =>
+    studentsApi
+      .getLoggedInStudentDetails()
+      .then(({ data }) => {
+        localStorage.setItem("studentDetails", JSON.stringify(data));
+        return data;
+      })
+      .then((data) => {
+        authCtx.refresh();
+        return data;
+      })
   );
 
 const getUserDetailsByUserId = (userId: number) =>

@@ -36,7 +36,9 @@ const Login: React.FC = () => {
         });
       })
       .then(() => {
-        navigate("/book");
+        setTimeout(() => {
+          navigate("/book");
+        }, 1000);
       })
       .catch((err) => {
         console.log(err);

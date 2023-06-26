@@ -4,6 +4,7 @@ import {
   getLoggedInUserDetails,
 } from "../api/query/users";
 import { IStudentObject, IUserObject } from "../types";
+import { QueryClient } from "react-query";
 
 const AuthContext = React.createContext({
   token: null as string | null,
@@ -15,7 +16,7 @@ const AuthContext = React.createContext({
     studentDetails?: IStudentObject;
   }) => {},
   refresh: () => {},
-  logout: () => {},
+  logout: (queryClient: QueryClient) => {},
 });
 
 export const AuthContextProvider = (props: any) => {
@@ -70,25 +71,26 @@ export const AuthContextProvider = (props: any) => {
   };
 
   const refreshHandler = () => {
-    const user = getLoggedInUserDetails();
-    const student = getLoggedInStudentDetails();
-    if (user.data) {
-      setUser(user.data);
-      localStorage.setItem("userDetails", JSON.stringify(user.data));
+    const userDetails = localStorage.getItem("userDetails");
+    const studentDetails = localStorage.getItem("studentDetails");
+
+    if (userDetails) {
+      setUser(JSON.parse(userDetails));
     }
-    if (student.data) {
-      setStudent(student.data);
-      localStorage.setItem("studentDetails", JSON.stringify(student.data));
+    if (studentDetails) {
+      setStudent(JSON.parse(studentDetails));
     }
   };
 
-  const logoutHandler = () => {
+  const logoutHandler = (queryClient: QueryClient) => {
     setToken(null);
     setUser(null);
     setStudent(null);
     localStorage.removeItem("userDetails");
     localStorage.removeItem("token");
     localStorage.removeItem("studentDetails");
+    queryClient.invalidateQueries(["user", "details"]);
+    queryClient.invalidateQueries(["student", "details"]);
   };
 
   const contextValue = {

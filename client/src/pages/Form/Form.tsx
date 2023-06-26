@@ -16,7 +16,10 @@ import { Label } from "../../components/common/Label";
 import Input from "antd/es/input/Input";
 import SlotPicker from "../../components/common/SlotPicker";
 import AuthContext from "../../store/auth-context";
-import { getLoggedInStudentDetails } from "../../api/query/users";
+import {
+  getLoggedInStudentDetails,
+  getLoggedInUserDetails,
+} from "../../api/query/users";
 import { ISlotObject, IStudentObject } from "../../types";
 import {
   updatePhoneNumber,
@@ -31,7 +34,8 @@ const Form: React.FC = () => {
   const queryClient = useQueryClient();
 
   // Query
-  const { data } = getLoggedInStudentDetails();
+  const { data } = getLoggedInStudentDetails(authCtx);
+  const { data: userData } = getLoggedInUserDetails(authCtx);
 
   const [studentData, setStudentData] = useState<IStudentObject>({
     id: data?.id || 0,
@@ -88,30 +92,22 @@ const Form: React.FC = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
     // check if phone number has been changed
     // if yes, then update the phone number
     // if no, then just update the student details
     if (!data) return;
     // check if any field in studentData is empty, if yes, then return
-    if (Object.values(studentData).some((value) => value === "")) return;
     if (!selectedSlot || !consent) return;
-    if (!phoneNumber) return;
+    if (!phoneNumber || !studentData.gender) return;
 
     if (phoneNumber !== data.user.phone_number) {
-      mutateUpdatePhoneNumber(undefined, {
-        onSuccess: () => {
-          authCtx.refresh();
-        },
-      });
+      mutateUpdatePhoneNumber();
     }
 
     if (data.roll_number === null || data.branch !== studentData.branch) {
-      mutateUpdateStudentDetails(undefined, {
-        onSuccess: () => {
-          authCtx.refresh();
-        },
-      });
+      mutateUpdateStudentDetails();
     }
 
     mutateBookSlot();
@@ -131,7 +127,7 @@ const Form: React.FC = () => {
         Fill Personal Information
       </StepTitle>
       <div className="flex w-full flex-col items-center">
-        <form className="w-full">
+        <form className="w-full" onSubmit={handleSubmit} method="post">
           <Row gutter={[48, 24]} className="mb-4">
             <Col span={12} className="flex flex-row gap-4 items-center">
               <Label htmlFor="email">Email: </Label>
@@ -219,15 +215,15 @@ const Form: React.FC = () => {
                 placeholder="Select Gender"
                 options={[
                   {
-                    value: "Male",
+                    value: "M",
                     label: "Male",
                   },
                   {
-                    value: "Female",
+                    value: "F",
                     label: "Female",
                   },
                   {
-                    value: "Other",
+                    value: "O",
                     label: "Other",
                   },
                 ]}
@@ -283,9 +279,9 @@ const Form: React.FC = () => {
             <Col span={24} className="">
               <Button
                 type="primary"
+                htmlType="submit"
                 className="bg-sky-400 w-full h-full"
                 disabled={!consent || !selectedSlot}
-                onClick={handleSubmit}
               >
                 <span className="py-1.5 items-center justify-center text-base font-semibold">
                   Book Appointment
