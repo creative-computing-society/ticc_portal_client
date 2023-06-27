@@ -79,10 +79,45 @@ export const columnsAll: ColumnsType<IDataType> = [
     key: "action",
     render: (_, record) => {
       return record.status === "Pending" ? (
-        <Space size="middle">
-          <span>Mark as attended</span>
-          <span>Absent</span>
-        </Space>
+        record.counsellor === "Not Assigned" ? (
+          <Space size="middle">
+            <button
+              className="text-sm text-left p-1 hover:text-sky-400"
+              onClick={() => {
+                console.log("Accept Appointment");
+              }}
+            >
+              Accept Appointment
+            </button>
+            <button
+              className="text-sm text-left p-1 hover:text-sky-400"
+              onClick={() => {
+                console.log("Cancel");
+              }}
+            >
+              Cancel
+            </button>
+          </Space>
+        ) : (
+          <Space size="middle">
+            <button
+              className="text-sm text-left p-1 hover:text-sky-400"
+              onClick={() => {
+                console.log("Mark as attended");
+              }}
+            >
+              Mark as attended
+            </button>
+            <button
+              className="text-sm text-left p-1 hover:text-sky-400"
+              onClick={() => {
+                console.log("Absent");
+              }}
+            >
+              Absent
+            </button>
+          </Space>
+        )
       ) : record.status === "Completed" ? (
         <span>Attended by {record.counsellor}</span>
       ) : (
@@ -105,18 +140,52 @@ export const columnsToday: ColumnsType<IDataType> = [
   {
     title: "Action",
     key: "action",
-    render: (_, record) => {
-      return record.status === "Pending" ? (
-        <Space size="middle">
-          <span>Mark as attended</span>
-          <span>Absent</span>
-        </Space>
+    render: (_, record) =>
+      record.status === "Pending" ? (
+        record.counsellor === "Not Assigned" ? (
+          <Space size="middle">
+            <button
+              className="text-sm text-left p-1 hover:text-sky-400"
+              onClick={() => {
+                console.log("Accept Appointment");
+              }}
+            >
+              Accept Appointment
+            </button>
+            <button
+              className="text-sm text-left p-1 hover:text-sky-400"
+              onClick={() => {
+                console.log("Cancel");
+              }}
+            >
+              Cancel
+            </button>
+          </Space>
+        ) : (
+          <Space size="middle">
+            <button
+              className="text-sm text-left p-1 hover:text-sky-400"
+              onClick={() => {
+                console.log("Mark as attended");
+              }}
+            >
+              Mark as attended
+            </button>
+            <button
+              className="text-sm text-left p-1 hover:text-sky-400"
+              onClick={() => {
+                console.log("Absent");
+              }}
+            >
+              Absent
+            </button>
+          </Space>
+        )
       ) : record.status === "Completed" ? (
         <span>Attended by {record.counsellor}</span>
       ) : (
         <span>-</span>
-      );
-    },
+      ),
   },
 ];
 
@@ -125,12 +194,46 @@ export const columnsPending: ColumnsType<IDataType> = [
   {
     title: "Action",
     key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Accept Appointment</a>
-        <a>Cancel</a>
-      </Space>
-    ),
+    render: (_, record) =>
+      record.counsellor === "Not Assigned" ? (
+        <Space size="middle">
+          <button
+            className="text-sm text-left p-1 hover:text-sky-400"
+            onClick={() => {
+              console.log("Accept Appointment");
+            }}
+          >
+            Accept Appointment
+          </button>
+          <button
+            className="text-sm text-left p-1 hover:text-sky-400"
+            onClick={() => {
+              console.log("Cancel");
+            }}
+          >
+            Cancel
+          </button>
+        </Space>
+      ) : (
+        <Space size="middle">
+          <button
+            className="text-sm text-left p-1 hover:text-sky-400"
+            onClick={() => {
+              console.log("Mark as attended");
+            }}
+          >
+            Mark as attended
+          </button>
+          <button
+            className="text-sm text-left p-1 hover:text-sky-400"
+            onClick={() => {
+              console.log("Absent");
+            }}
+          >
+            Absent
+          </button>
+        </Space>
+      ),
   },
 ];
 

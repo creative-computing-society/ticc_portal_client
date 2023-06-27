@@ -34,7 +34,6 @@ const bookingsApi = {
     isActive?: string,
     date?: string
   ) {
-    console.log(generateQuery(userId, isActive, date));
     return axiosClient.get(
       `${BASE_URL}/list/${generateQuery(userId, isActive, date)}`
     );
