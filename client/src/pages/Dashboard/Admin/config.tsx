@@ -3,6 +3,7 @@ import { ColumnsType } from "antd/es/table";
 import DashTable from "../../../components/Dashboard/Admin/Table";
 import dayjs from "dayjs";
 import BookingsTable from "../../../components/Dashboard/Admin/BookingsTable";
+import { Link } from "react-router-dom";
 
 type Status = "pending" | "completed" | "cancelled";
 const statusTagColor: {
@@ -25,6 +26,8 @@ export interface IDataType {
   slot: string;
   status: Status;
   counsellor: string;
+  date: string;
+  studentId: number;
 }
 
 export const columns: ColumnsType<IDataType> = [
@@ -32,6 +35,9 @@ export const columns: ColumnsType<IDataType> = [
     title: "Name",
     dataIndex: "name",
     key: "name",
+    render: (_, record) => (
+      <Link to={`students/${record.studentId}`}>{record.name}</Link>
+    ),
   },
   // {
   //   title: "Email",
@@ -42,18 +48,18 @@ export const columns: ColumnsType<IDataType> = [
     title: "Phone",
     dataIndex: "phone",
     key: "phone",
-    render: (phone: number) => <a href={"tel:" + phone}>`+91${phone}`</a>,
+    render: (phone: number) => <a href={"tel:" + phone}>+91 {phone}</a>,
   },
   // {
   //   title: "Branch",
   //   dataIndex: "branch",
   //   key: "branch",
   // },
-  {
-    title: "Year",
-    dataIndex: "year",
-    key: "year",
-  },
+  // {
+  //   title: "Year",
+  //   dataIndex: "year",
+  //   key: "year",
+  // },
   {
     title: "Slot",
     dataIndex: "slot",
@@ -176,6 +182,8 @@ export const tabItems: TabsProps["items"] = [
         columns={columnsToday}
         params={{
           date: today.format("YYYY-MM-DD"),
+          isActive: undefined,
+          userId: undefined,
         }}
       />
     ),
@@ -188,7 +196,8 @@ export const tabItems: TabsProps["items"] = [
         columns={columnsPending}
         params={{
           date: today.format("YYYY-MM-DD"),
-          isActive: true,
+          isActive: "True",
+          userId: undefined,
         }}
       />
     ),
@@ -201,7 +210,8 @@ export const tabItems: TabsProps["items"] = [
         columns={columnsCompleted}
         params={{
           date: today.format("YYYY-MM-DD"),
-          isActive: false,
+          isActive: "False",
+          userId: undefined,
         }}
       />
     ),
@@ -209,6 +219,15 @@ export const tabItems: TabsProps["items"] = [
   {
     key: "4",
     label: `All Upcoming Sessions`,
-    children: <BookingsTable columns={columnsAll} params={{}} />,
+    children: (
+      <BookingsTable
+        columns={columnsAll}
+        params={{
+          userId: undefined,
+          date: undefined,
+          isActive: "True",
+        }}
+      />
+    ),
   },
 ];

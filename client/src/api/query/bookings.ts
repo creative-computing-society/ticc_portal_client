@@ -5,7 +5,7 @@ import { IBookingObject } from "../../types";
 
 const getBookingsListByCounsellor = (
   userId?: number,
-  isActive?: boolean,
+  isActive?: string,
   date?: string
 ) =>
   useQuery<IBookingObject[]>(["slots", "byDate", userId, isActive, date], () =>

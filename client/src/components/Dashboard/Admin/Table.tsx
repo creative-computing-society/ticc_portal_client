@@ -1,5 +1,4 @@
 import { Table, TableProps } from "antd";
-import { columnsAll } from "../../../pages/Dashboard/Admin/config";
 
 const DashTable: React.FC<{
   columns: TableProps<any>["columns"];
@@ -9,7 +8,7 @@ const DashTable: React.FC<{
     <Table
       columns={columns}
       dataSource={dataSource}
-      pagination={{ pageSize: 10 }}
+      pagination={{ pageSize: 8 }}
       scroll={{ y: 240 }}
     />
   );

@@ -1,6 +1,20 @@
 import { axiosClient } from "../axios";
 const BASE_URL = "bookings";
 
+const generateQuery = (userId?: number, isActive?: string, date?: string) => {
+  let query = "";
+  if (userId) {
+    query += `?counsellor_id=${userId}`;
+  }
+  if (isActive) {
+    query += query ? `&is_active=${isActive}` : `?is_active=${isActive}`;
+  }
+  if (date) {
+    query += query ? `&date=${date}` : `?date=${date}`;
+  }
+  return query;
+};
+
 const bookingsApi = {
   bookSlot(id: number, info?: string) {
     const body = {
@@ -17,20 +31,13 @@ const bookingsApi = {
   },
   getBookingsListByCounsellor(
     userId?: number,
-    isActive?: boolean,
+    isActive?: string,
     date?: string
   ) {
-    const query = `?`;
-    if (userId) {
-      query.concat(`user_id=${userId}&`);
-    }
-    if (isActive) {
-      query.concat(`is_active=${isActive}&`);
-    }
-    if (date) {
-      query.concat(`date=${date}`);
-    }
-    return axiosClient.get(`${BASE_URL}/list/${query}`);
+    console.log(generateQuery(userId, isActive, date));
+    return axiosClient.get(
+      `${BASE_URL}/list/${generateQuery(userId, isActive, date)}`
+    );
   },
 };
 
