@@ -5,13 +5,13 @@ import dayjs from "dayjs";
 import BookingsTable from "../../../components/Dashboard/Admin/BookingsTable";
 import { Link } from "react-router-dom";
 
-type Status = "pending" | "completed" | "cancelled";
+type Status = "Pending" | "Completed" | "Cancelled by student";
 const statusTagColor: {
   [key in Status]: string;
 } = {
-  pending: "blue",
-  completed: "green",
-  cancelled: "red",
+  Pending: "blue",
+  Completed: "green",
+  "Cancelled by student": "red",
 };
 
 export interface IDataType {
@@ -78,15 +78,15 @@ export const columnsAll: ColumnsType<IDataType> = [
     title: "Action",
     key: "action",
     render: (_, record) => {
-      return record.status === "pending" ? (
+      return record.status === "Pending" ? (
         <Space size="middle">
           <span>Mark as attended</span>
           <span>Absent</span>
         </Space>
-      ) : record.status === "completed" ? (
+      ) : record.status === "Completed" ? (
         <span>Attended by {record.counsellor}</span>
       ) : (
-        <span>Absent</span>
+        <span>{record.status}</span>
       );
     },
   },
@@ -106,15 +106,15 @@ export const columnsToday: ColumnsType<IDataType> = [
     title: "Action",
     key: "action",
     render: (_, record) => {
-      return record.status === "pending" ? (
+      return record.status === "Pending" ? (
         <Space size="middle">
           <span>Mark as attended</span>
           <span>Absent</span>
         </Space>
-      ) : record.status === "completed" ? (
+      ) : record.status === "Completed" ? (
         <span>Attended by {record.counsellor}</span>
       ) : (
-        <span>Absent</span>
+        <span>-</span>
       );
     },
   },
@@ -140,6 +140,13 @@ export const columnsCompleted: ColumnsType<IDataType> = [
     title: "Attended by",
     key: "counsellor",
     dataIndex: "counsellor",
+    render: (_, record) => {
+      return record.status.includes("Cancelled") ? (
+        <span>Cancelled</span>
+      ) : (
+        <span>{record.counsellor}</span>
+      );
+    },
   },
 ];
 
