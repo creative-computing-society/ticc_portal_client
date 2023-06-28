@@ -286,6 +286,32 @@ export const columnsAdmins: ColumnsType<IDataType> = [
   },
 ];
 
+export const columnsStudentPage: ColumnsType<IDataType> = [
+  {
+    title: "Date",
+    dataIndex: "date",
+    key: "date",
+  },
+  {
+    title: "Slot",
+    dataIndex: "slot",
+    key: "slot",
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+    render: (status: Status) => (
+      <Tag color={statusTagColor[status]}>{status}</Tag>
+    ),
+  },
+  {
+    title: "Counsellor Assigned",
+    dataIndex: "counsellor",
+    key: "counsellor",
+  },
+];
+
 const today = dayjs();
 
 export const tabItems: TabsProps["items"] = [

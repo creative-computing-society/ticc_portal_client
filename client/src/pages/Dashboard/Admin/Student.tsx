@@ -1,12 +1,13 @@
 import { useParams } from "react-router-dom";
 import { getStudentDetailsByUserId } from "../../../api/query/users";
+import BookingsTable from "../../../components/Dashboard/Admin/BookingsTable";
+import { columnsStudentPage } from "./config";
 
 const Student: React.FC = () => {
   const { id } = useParams();
   const { data } = getStudentDetailsByUserId(Number(id));
-  console.log(data);
   return (
-    <div className="flex flex-col w-full gap-4 p-4">
+    <div className="flex flex-col w-full gap-4 p-4 pb-0">
       <div className="flex">
         {/* Create table with 2 columns, for displaying info of student */}
         <table className="w-full text-lg">
@@ -44,6 +45,13 @@ const Student: React.FC = () => {
           </tbody>
         </table>
       </div>
+      <h3 className="text-xl font-medium mt-6">Past Sessions</h3>
+      <BookingsTable
+        columns={columnsStudentPage}
+        params={{
+          userId: Number(id),
+        }}
+      />
     </div>
   );
 };

@@ -36,6 +36,13 @@ const BookingsTable: React.FC<{
         counsellor: booking.assigned_counsellor || null,
       });
     });
+    // sort by date and time
+    dataSource.sort((a, b) => {
+      if (a.date === b.date) {
+        return a.slot.localeCompare(b.slot);
+      }
+      return a.date.localeCompare(b.date);
+    });
     setDataSource(dataSource);
   }, [data]);
   return <DashTable columns={columns} dataSource={dataSource} />;

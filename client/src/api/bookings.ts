@@ -4,7 +4,7 @@ const BASE_URL = "bookings";
 const generateQuery = (userId?: number, isActive?: string, date?: string) => {
   let query = "";
   if (userId) {
-    query += `?counsellor_id=${userId}`;
+    query += `?user_id=${userId}`;
   }
   if (isActive) {
     query += query ? `&is_active=${isActive}` : `?is_active=${isActive}`;
