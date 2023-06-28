@@ -88,7 +88,7 @@ const AdminHome: React.FC = () => {
       <SearchBar
         placeholder="Search student by email or name"
         onSelect={(value) => {
-          navigate(`/dashboard/students/${value}`);
+          navigate(`/dashboard/student/${value}`);
         }}
       />
       <div className="mt-8">

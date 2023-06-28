@@ -2,6 +2,7 @@ import { TableProps } from "antd";
 import DashTable from "./Table";
 import { getBookingsListByCounsellor } from "../../../api/query/bookings";
 import { useEffect, useState } from "react";
+import { IDataType } from "../../../pages/Dashboard/Admin/config";
 
 const BookingsTable: React.FC<{
   columns: TableProps<any>["columns"];
@@ -16,21 +17,23 @@ const BookingsTable: React.FC<{
     params.isActive,
     params.date
   );
-  const [dataSource, setDataSource] = useState<any[]>([]);
+  const [dataSource, setDataSource] = useState<IDataType[]>([]);
   useEffect(() => {
     if (!data) return;
 
-    let dataSource: any[] = [];
+    let dataSource: IDataType[] = [];
     data.forEach((booking) => {
       dataSource.push({
         key: booking.id,
-        name: booking.student_email,
+        name: booking.student_name,
+        email: booking.student_email,
         studentId: booking.student,
+        userId: booking.user_id,
         phone: "",
         slot: booking.slot.start_time,
         date: booking.slot.date,
         status: booking.remarks,
-        counsellor: booking.assigned_counsellor || "Not Assigned",
+        counsellor: booking.assigned_counsellor || null,
       });
     });
     setDataSource(dataSource);

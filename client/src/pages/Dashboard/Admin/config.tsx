@@ -4,30 +4,35 @@ import DashTable from "../../../components/Dashboard/Admin/Table";
 import dayjs from "dayjs";
 import BookingsTable from "../../../components/Dashboard/Admin/BookingsTable";
 import { Link } from "react-router-dom";
+import { Status } from "../../../types";
 
-type Status = "Pending" | "Completed" | "Cancelled by student";
 const statusTagColor: {
   [key in Status]: string;
 } = {
   Pending: "blue",
   Completed: "green",
   "Cancelled by student": "red",
+  "Cancelled by counsellor": "red",
+  "Cancelled due to Institute holiday": "red",
+  "Missed by student": "red",
+  "Counsellor on leave": "red",
 };
 
 export interface IDataType {
-  key: string;
+  key: number;
   name: string;
-  rollNumber: number;
+  rollNumber?: number;
   email: string;
-  phone: number;
-  year: number;
-  branch: string;
-  gender: string;
+  phone: string;
+  year?: number;
+  branch?: string;
+  gender?: string;
   slot: string;
   status: Status;
-  counsellor: string;
+  counsellor: number | null;
   date: string;
   studentId: number;
+  userId: number;
 }
 
 export const columns: ColumnsType<IDataType> = [
@@ -36,7 +41,7 @@ export const columns: ColumnsType<IDataType> = [
     dataIndex: "name",
     key: "name",
     render: (_, record) => (
-      <Link to={`students/${record.studentId}`}>{record.name}</Link>
+      <Link to={`student/${record.userId}`}>{record.name}</Link>
     ),
   },
   // {
@@ -79,7 +84,7 @@ export const columnsAll: ColumnsType<IDataType> = [
     key: "action",
     render: (_, record) => {
       return record.status === "Pending" ? (
-        record.counsellor === "Not Assigned" ? (
+        record.counsellor === null ? (
           <Space size="middle">
             <button
               className="text-sm text-left p-1 hover:text-sky-400"
@@ -142,7 +147,7 @@ export const columnsToday: ColumnsType<IDataType> = [
     key: "action",
     render: (_, record) =>
       record.status === "Pending" ? (
-        record.counsellor === "Not Assigned" ? (
+        record.counsellor === null ? (
           <Space size="middle">
             <button
               className="text-sm text-left p-1 hover:text-sky-400"
@@ -195,7 +200,7 @@ export const columnsPending: ColumnsType<IDataType> = [
     title: "Action",
     key: "action",
     render: (_, record) =>
-      record.counsellor === "Not Assigned" ? (
+      record.counsellor === null ? (
         <Space size="middle">
           <button
             className="text-sm text-left p-1 hover:text-sky-400"

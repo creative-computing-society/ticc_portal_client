@@ -2,11 +2,13 @@ export interface IBookingObject {
   id: number;
   slot: ISlotObject;
   student: number;
+  user_id: number;
   student_email: string;
+  student_name: string;
   additional_info: string;
   is_active: boolean;
-  remarks: string;
-  assigned_counsellor: number;
+  remarks: Status;
+  assigned_counsellor: number | null;
 }
 
 export interface ISlotObject {
@@ -36,3 +38,12 @@ export interface IStudentObject {
   gender: string | null;
   user: IUserObject;
 }
+
+export type Status =
+  | "Pending"
+  | "Completed"
+  | "Cancelled by student"
+  | "Cancelled by counsellor"
+  | "Missed by student"
+  | "Cancelled due to Institute holiday"
+  | "Counsellor on leave";

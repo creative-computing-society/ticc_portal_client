@@ -1,4 +1,4 @@
-import { Layout, Menu } from "antd";
+import { Button, Layout, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
 import logo from "../../assets/logo.png";
 
@@ -70,7 +70,19 @@ const Dashboard = () => {
             element={<div>Manage Resources</div>}
           ></Route>
           <Route path={"manage/admins"} element={<ManageAdmins />}></Route>
-          <Route path={"logout"} element={<div>Logout</div>}></Route>
+          <Route
+            path={"logout"}
+            element={
+              <div className="flex flex-col gap-4 h-full w-fit mx-auto justify-center items-center">
+                <span className="text-xl font-medium ">
+                  Are you sure you want to log out?
+                </span>
+                <Button type="primary" className="bg-sky-400 w-full h-max">
+                  <span className="text-lg font-semibold">Yes</span>
+                </Button>
+              </div>
+            }
+          ></Route>
           <Route path={"student/:id"} element={<Student />}></Route>
           <Route path={"*"} element={<div>404</div>}></Route>
         </Routes>
