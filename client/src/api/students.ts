@@ -11,7 +11,9 @@ const studentsApi = {
     return axiosClient.get<IStudentObject>(`${BASE_URL}/details/`);
   },
   getStudentDetailsByUserId(userId: number) {
-    return axiosClient.get(`${BASE_URL}/details?user_id=${userId}`);
+    return axiosClient.get<IStudentObject>(
+      `${BASE_URL}/details?user_id=${userId}`
+    );
   },
   updateStudentDetails(details: {
     roll_number?: string;

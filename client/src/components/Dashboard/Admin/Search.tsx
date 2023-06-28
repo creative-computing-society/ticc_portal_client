@@ -52,7 +52,7 @@ const SearchBar: React.FC<SelectProps<any>> = ({
       >
         {data &&
           data.map((option, index: number) => (
-            <Option value={option.id} key={index}>
+            <Option value={option.user.id} key={index}>
               <div className="flex flex-row items-center p-2 ">
                 <span className="w-1/3">{option.user.full_name}</span>
                 <span className="w-1/3">{option.user.email}</span>
