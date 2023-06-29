@@ -10,7 +10,7 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
   const { onSelectSlot, onDateChange, isMultiSelect = false } = props;
 
   const startDate = dayjs().add(-1, "day");
-  const endDate = startDate.add(2, "week");
+  const endDate = startDate.add(15, "day");
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
   const [selectedSlot, setSelectedSlot] = useState<ISlotObject | null>(null);
   const [filteredSlots, setFilteredSlots] = useState<ISlotObject[]>([]);
@@ -55,7 +55,7 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
             headerRender={(header) => {
               return null;
             }}
-            validRange={[startDate, endDate.add(-1, "day")]}
+            validRange={[startDate, endDate]}
             disabledDate={(current) => {
               // return false for Saturdays and Sundays
               return current.day() === 6 || current.day() === 0;

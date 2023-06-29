@@ -5,7 +5,7 @@ import logo from "../../assets/logo.png";
 import { useEffect, useState } from "react";
 import { AdminMenuItems, getMenuItems } from "./config";
 import AdminHome from "./Admin";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import ManageAdmins from "./Admin/ManageAdmins";
 import ManageSlots from "./Admin/ManageSlots";
 import Student from "./Admin/Student";
@@ -24,6 +24,8 @@ const Dashboard = () => {
     const path = pathname.split("/").slice(2).join("/");
     setSelectedMenuItem(paths.indexOf(path).toString());
   }, [pathname]);
+
+  const navigate = useNavigate();
 
   return (
     <Layout
@@ -77,7 +79,13 @@ const Dashboard = () => {
                 <span className="text-xl font-medium ">
                   Are you sure you want to log out?
                 </span>
-                <Button type="primary" className="bg-sky-400 w-full h-max">
+                <Button
+                  type="primary"
+                  className="bg-sky-400 w-full h-max"
+                  onClick={() => {
+                    navigate("/logout");
+                  }}
+                >
                   <span className="text-lg font-semibold">Yes</span>
                 </Button>
               </div>

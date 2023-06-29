@@ -11,11 +11,13 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
     const body = {
       email,
       password,
@@ -44,6 +46,7 @@ const Login: React.FC = () => {
       })
       .catch((err) => {
         console.log(err);
+        setError(err.response.data.error);
       });
   };
   return (
@@ -90,6 +93,11 @@ const Login: React.FC = () => {
               }
             />
           </Col>
+          {error && (
+            <Col span={24}>
+              <p className="text-red-500 w-full text-center mx-auto">{error}</p>
+            </Col>
+          )}
           <Col span={24} className="">
             <Button
               type="primary"
