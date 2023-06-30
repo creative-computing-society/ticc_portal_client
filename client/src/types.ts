@@ -1,3 +1,8 @@
+export interface IHolidayObject {
+  id: number;
+  date: string;
+  description: string | null;
+}
 export interface IBookingObject {
   id: number;
   slot: ISlotObject;

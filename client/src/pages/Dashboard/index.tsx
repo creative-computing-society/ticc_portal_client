@@ -2,13 +2,15 @@ import { Button, Layout, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
 import logo from "../../assets/logo.png";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AdminMenuItems, getMenuItems } from "./config";
 import AdminHome from "./Admin";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import ManageAdmins from "./Admin/ManageAdmins";
 import ManageSlots from "./Admin/ManageSlots";
 import Student from "./Admin/Student";
+import { getLoggedInUserDetails } from "../../api/query/users";
+import AuthContext from "../../store/auth-context";
 
 const Dashboard = () => {
   const paths = AdminMenuItems.map((item) => item.route);
@@ -18,6 +20,10 @@ const Dashboard = () => {
   const [selectedMenuItem, setSelectedMenuItem] = useState(
     paths.indexOf(path).toString()
   );
+
+  const authCtx = useContext(AuthContext);
+
+  const { data } = getLoggedInUserDetails(authCtx);
 
   useEffect(() => {
     // remove /dashboard from pathname
@@ -53,8 +59,10 @@ const Dashboard = () => {
             alt="logo"
             className="w-full pb-2 mb-8 border-b border-[#444444] border-opacity-50"
           />
-          <span className="text-3xl font-bold mb-1">Hello, Sonam!</span>
-          <span className="text-sm font-medium">Have a nice day 🌷</span>
+          <span className="text-3xl font-bold mb-1">
+            Hello, {data?.full_name}!
+          </span>
+          <span className="text-base font-medium">Have a nice day</span>
         </div>
         <Menu
           theme="dark"

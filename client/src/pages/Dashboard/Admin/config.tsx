@@ -1,4 +1,4 @@
-import { Space, TabsProps, Tag } from "antd";
+import { Button, Space, TabsProps, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
 import DashTable from "../../../components/Dashboard/Admin/Table";
 import dayjs from "dayjs";
@@ -369,6 +369,41 @@ export const tabItems: TabsProps["items"] = [
           isActive: "True",
         }}
       />
+    ),
+  },
+];
+
+export interface IHolidayItemType {
+  date: string;
+  description: string | null;
+  id: number;
+  time?: string;
+  onAction: (date: string) => void;
+}
+
+export const columnsHolidays: ColumnsType<IHolidayItemType> = [
+  {
+    title: "Date",
+    dataIndex: "date",
+    key: "date",
+  },
+  {
+    title: "Description",
+    dataIndex: "description",
+    key: "description",
+  },
+  {
+    title: "Action",
+    key: "action",
+    render: (_, record) => (
+      <button
+        className="bg-red-500 text-white font-semibold px-4 py-1 rounded-md hover:bg-red-600"
+        onClick={() => {
+          record.onAction(record.date);
+        }}
+      >
+        Delete
+      </button>
     ),
   },
 ];

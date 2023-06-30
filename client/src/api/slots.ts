@@ -1,5 +1,5 @@
 import { axiosClient } from "../axios";
-import { ISlotObject } from "../types";
+import { IHolidayObject, ISlotObject } from "../types";
 const BASE_URL = "slots";
 
 const slotsApi = {
@@ -15,14 +15,14 @@ const slotsApi = {
     return axiosClient.get(`${BASE_URL}/slotdetails?slot_id=${id}`);
   },
   listAllHolidays() {
-    return axiosClient.get(`${BASE_URL}/holidays/`);
+    return axiosClient.get<IHolidayObject[]>(`${BASE_URL}/holidays/list/`);
   },
   addHoliday(date: string, description?: string) {
     const body = {
       date: date,
       description: description,
     };
-    return axiosClient.post(`${BASE_URL}/holidays/`, body);
+    return axiosClient.post(`${BASE_URL}/holidays/add/`, body);
   },
   deleteHoliday(date: string) {
     return axiosClient.delete(`${BASE_URL}/holidays/delete/?date=${date}`);

@@ -1,26 +1,57 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { QueryClient, useMutation } from "react-query";
 import slotsApi from "../slots";
+import { openNotification } from "../../components/common/Notification";
 
 const addHoliday = (
   queryClient: QueryClient,
   date: string,
   description?: string
 ) =>
-  useMutation(() => slotsApi.addHoliday(date, description), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["slots", "holidays"]);
-      queryClient.invalidateQueries(["slots", "all"]);
-    },
-  });
+  useMutation(
+    () =>
+      slotsApi
+        .addHoliday(date, description)
+        .then(({ data }) => {
+          openNotification("success", "Success", "Holiday added successfully");
+          return data;
+        })
+        .catch((err) => {
+          openNotification("error", "Error", err.response.data.detail);
+          return err;
+        }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["slots", "holidays"]);
+        queryClient.invalidateQueries(["slots"]);
+      },
+    }
+  );
 
-const deleteHoliday = (queryClient: QueryClient, date: string) =>
-  useMutation(() => slotsApi.deleteHoliday(date), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["slots", "holidays"]);
-      queryClient.invalidateQueries(["slots", "all"]);
-    },
-  });
+const deleteHoliday = (queryClient: QueryClient) =>
+  useMutation(
+    (date: string) =>
+      slotsApi
+        .deleteHoliday(date)
+        .then(({ data }) => {
+          openNotification(
+            "success",
+            "Success",
+            "Holiday deleted successfully"
+          );
+          return data;
+        })
+        .catch((err) => {
+          openNotification("error", "Error", err.response.data.detail);
+          return err;
+        }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["slots", "holidays"]);
+        queryClient.invalidateQueries(["slots"]);
+      },
+    }
+  );
 
 const addLeaveByDate = (
   queryClient: QueryClient,
