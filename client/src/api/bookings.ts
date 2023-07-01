@@ -42,12 +42,12 @@ const bookingsApi = {
   updateBookingByCounsellor(
     booking_id: number,
     remarks: Status,
-    assigned_counselor_id: number
+    assigned_counsellor_id: number
   ) {
     const body = {
       booking_id,
       remarks,
-      assigned_counselor: assigned_counselor_id,
+      assigned_counsellor: assigned_counsellor_id,
       is_active: false,
     };
     return axiosClient.patch(`${BASE_URL}/update/`, body);

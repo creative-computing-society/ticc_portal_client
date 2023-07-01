@@ -28,6 +28,7 @@ import {
 import { useQueryClient } from "react-query";
 import TextArea from "antd/es/input/TextArea";
 import { bookSlot } from "../../api/mutations/bookings";
+import { openNotification } from "../../components/common/Notification";
 
 const Form: React.FC = () => {
   const authCtx = useContext(AuthContext);
@@ -70,15 +71,16 @@ const Form: React.FC = () => {
     queryClient,
     phoneNumber
   );
-  const { mutate: mutateUpdateStudentDetails } = updateStudentDetails(
-    queryClient,
-    {
-      roll_number: studentData.roll_number || undefined,
-      branch: studentData.branch || undefined,
-      admission_year: studentData.admission_year || undefined,
-      gender: studentData.gender || undefined,
-    }
-  );
+  const {
+    mutate: mutateUpdateStudentDetails,
+    error: updateError,
+    isError: studentUpdateError,
+  } = updateStudentDetails(queryClient, {
+    roll_number: studentData.roll_number || undefined,
+    branch: studentData.branch || undefined,
+    admission_year: studentData.admission_year || undefined,
+    gender: studentData.gender || undefined,
+  });
   const { mutate: mutateBookSlot, data: bookingData } = bookSlot(
     queryClient,
     selectedSlot?.id || 0,
@@ -110,7 +112,16 @@ const Form: React.FC = () => {
       mutateUpdateStudentDetails();
     }
 
-    mutateBookSlot();
+    if (studentUpdateError) {
+      console.log(updateError);
+      openNotification(
+        "error",
+        "Error",
+        `${JSON.stringify((updateError as any).response.data)}`
+      );
+    } else {
+      mutateBookSlot();
+    }
   };
 
   return (
