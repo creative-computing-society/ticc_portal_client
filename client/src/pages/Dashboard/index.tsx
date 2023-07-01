@@ -41,8 +41,11 @@ const Dashboard = () => {
         overflow: "hidden",
         maxWidth: "100vw",
         width: "100vw",
+        backgroundImage:
+          "url(https://www.toptal.com/designers/subtlepatterns/uploads/leaves.png)",
+        backgroundBlendMode: "soft-light",
       }}
-      className="bg-sky-50 bg-opacity-50"
+      className="bg-sky-50 bg-opacity-60"
     >
       <Sider
         // collapsible

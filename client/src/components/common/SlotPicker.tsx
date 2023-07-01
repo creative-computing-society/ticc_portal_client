@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { checkDateValidity, getSlots } from "../Form/utils";
 import { ISlotPickerProps } from "./types";
-import { getSlotsByDate } from "../../api/query/slots";
+import { getAllHolidays, getSlotsByDate } from "../../api/query/slots";
 import { ISlotObject } from "../../types";
 
 const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
@@ -15,16 +15,20 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
   const [selectedSlot, setSelectedSlot] = useState<ISlotObject | null>(null);
   const [filteredSlots, setFilteredSlots] = useState<ISlotObject[]>([]);
   const [isWeekend, setIsWeekend] = useState<boolean>(false);
+  const [isHoliday, setIsHoliday] = useState<boolean>(false);
 
   const { data, isLoading } = getSlotsByDate(
     startDate.format("YYYY-MM-DD"),
     endDate.format("YYYY-MM-DD")
   );
 
+  const { data: holidayList } = getAllHolidays();
+
   useEffect(() => {
     if (!data) return;
 
     setIsWeekend(false);
+    setIsHoliday(false);
 
     const slots = data
       .filter((slot) => {
@@ -38,11 +42,20 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
       setIsWeekend(true);
     }
 
+    if (holidayList) {
+      const holiday = holidayList.find((holiday) => {
+        return holiday.date === selectedDate.format("YYYY-MM-DD");
+      });
+      if (holiday) {
+        setIsHoliday(true);
+      }
+    }
+
     setSelectedSlot(null);
     onSelectSlot(null);
 
     setFilteredSlots(slots);
-  }, [selectedDate, data]);
+  }, [selectedDate, data, holidayList]);
 
   return (
     <div className="flex flex-col w-full">
@@ -62,10 +75,17 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
             }}
             fullCellRender={(date) => {
               const isSelected = selectedDate?.isSame(date, "day");
+              const holiday =
+                !!holidayList &&
+                holidayList.find((holiday) => {
+                  return holiday.date === date.format("YYYY-MM-DD");
+                });
               return (
                 <div
                   className={`flex flex-col items-center m-2 p-2 ${
-                    !isSelected ? "hover:bg-sky-400 hover:bg-opacity-20" : ""
+                    holiday ? "text-red-500" : ""
+                  } ${
+                    !isSelected ? "hover:bg-sky-400 hover:bg-opacity-20 " : ""
                   } rounded-md ${
                     checkDateValidity(date, startDate, endDate)
                       ? "cursor-pointer"
@@ -92,6 +112,10 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
           {isWeekend ? (
             <div className="text-center text-lg font-semibold text-red-500">
               No slots available on weekends
+            </div>
+          ) : isHoliday ? (
+            <div className="text-center text-lg font-semibold text-red-500">
+              No slots available. Its a holiday.
             </div>
           ) : (
             <Row gutter={[16, 16]}>

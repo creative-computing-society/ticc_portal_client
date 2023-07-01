@@ -6,6 +6,7 @@ const DashTable: React.FC<{
 }> = ({ columns, dataSource }) => {
   return (
     <Table
+      bordered
       columns={columns}
       dataSource={dataSource}
       pagination={{ pageSize: 8 }}

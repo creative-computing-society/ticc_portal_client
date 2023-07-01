@@ -1,4 +1,4 @@
-import { Button, DatePicker, DatePickerProps, Table } from "antd";
+import { Button, DatePicker, DatePickerProps, Modal, Table } from "antd";
 import SearchBar from "../../../components/Dashboard/Admin/Search";
 import { IHolidayItemType, columnsAdmins, columnsHolidays } from "./config";
 import SlotPicker from "../../../components/common/SlotPicker";
@@ -8,16 +8,29 @@ import { ISlotObject } from "../../../types";
 import { getAllHolidays } from "../../../api/query/slots";
 import { useQueryClient } from "react-query";
 import { addHoliday, deleteHoliday } from "../../../api/mutations/slots";
+import TextArea from "antd/es/input/TextArea";
+import DashTable from "../../../components/Dashboard/Admin/Table";
 
 const ManageSlots: React.FC = () => {
   const [selectedSlot, setSelectedSlot] = useState<ISlotObject | null>(null);
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
-  const [newHoliday, setNewHoliday] = useState<string | null>(null);
+  const [newHoliday, setNewHoliday] = useState<{
+    value: dayjs.Dayjs | null;
+    dateString: string;
+  }>({ value: null, dateString: "" });
+  const [holidayDescription, setHolidayDescription] = useState<
+    string | undefined
+  >(undefined);
+  const [holidayModalOpen, setHolidayModalOpen] = useState<boolean>(false);
   const [holidayList, setHolidayList] = useState<IHolidayItemType[]>([]);
 
   const queryClient = useQueryClient();
   const { data: holidayData } = getAllHolidays();
-  const { mutate: addHolidayMutate } = addHoliday(queryClient, newHoliday!);
+  const { mutate: addHolidayMutate, isLoading } = addHoliday(
+    queryClient,
+    newHoliday.dateString!,
+    holidayDescription
+  );
   const { mutate: deleteHolidayMutate } = deleteHoliday(queryClient);
 
   useEffect(() => {
@@ -35,11 +48,14 @@ const ManageSlots: React.FC = () => {
 
   const onPickHoliday: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
-    setNewHoliday(dateString);
+    setNewHoliday({ value: date, dateString: dateString });
   };
   const onAddHoliday = () => {
     if (newHoliday) {
       addHolidayMutate();
+      setHolidayModalOpen(false);
+      setNewHoliday({ value: null, dateString: "" });
+      setHolidayDescription(undefined);
     }
   };
 
@@ -94,12 +110,24 @@ const ManageSlots: React.FC = () => {
             onChange={onPickHoliday}
             size="large"
             className="w-full"
+            value={newHoliday.value}
+            disabledDate={(current) => {
+              // disable all dates before today and saturday and sunday
+              return (
+                current &&
+                (current < dayjs().endOf("day") ||
+                  current.day() === 0 ||
+                  current.day() === 6)
+              );
+            }}
           />
           <Button
             className="w-full h-full bg-[#38bdf8]"
             type={"primary"}
-            onClick={onAddHoliday}
-            disabled={!newHoliday}
+            onClick={() => {
+              setHolidayModalOpen(true);
+            }}
+            disabled={!newHoliday.value}
           >
             <span className="py-1 items-center justify-center text-base font-semibold">
               Add Holiday
@@ -107,9 +135,32 @@ const ManageSlots: React.FC = () => {
           </Button>
         </div>
       </div>
+
+      <Modal
+        title="Confirm adding holiday?"
+        open={holidayModalOpen}
+        onOk={onAddHoliday}
+        confirmLoading={isLoading}
+        onCancel={() => {
+          setHolidayModalOpen(false);
+        }}
+        okButtonProps={{
+          className: "bg-[#38bdf8]",
+        }}
+      >
+        <TextArea
+          placeholder="Enter holiday description (optional)..."
+          className="my-2 p-3"
+          value={holidayDescription}
+          onChange={(e) => {
+            setHolidayDescription(e.target.value);
+          }}
+        />
+      </Modal>
+
       <div className="my-8">
         <h3 className="text-2xl font-medium my-3">Current Holidays</h3>
-        <Table columns={columnsHolidays} dataSource={holidayList} />
+        <DashTable columns={columnsHolidays} dataSource={holidayList} />
       </div>
     </div>
   );
