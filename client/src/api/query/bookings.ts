@@ -8,7 +8,7 @@ const getBookingsListByCounsellor = (
   isActive?: string,
   date?: string
 ) =>
-  useQuery<IBookingObject[]>(["slots", "byDate", userId, isActive, date], () =>
+  useQuery<IBookingObject[]>(["bookings", "all", userId, isActive, date], () =>
     bookingsApi
       .getBookingsListByCounsellor(userId, isActive, date)
       .then(({ data }) => data)

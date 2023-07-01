@@ -32,4 +32,83 @@ const cancelBooking = (queryClient: QueryClient, booking_id: number) =>
     },
   });
 
-export { bookSlot, cancelBooking };
+const acceptBooking = (queryClient: QueryClient, counsellorId: number) =>
+  useMutation(
+    (bookingId: number) =>
+      bookingsApi
+        .updateBookingByCounsellor(bookingId, "Completed", counsellorId)
+        .then(({ data }) => {
+          openNotification(
+            "success",
+            "Success",
+            "Booking accepted successfully"
+          );
+          return data;
+        })
+        .catch((err) => {
+          openNotification("error", "Error", err.response.data.detail);
+        }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["bookings", "all"]);
+      },
+    }
+  );
+
+const rejectBooking = (queryClient: QueryClient, counsellorId: number) =>
+  useMutation(
+    (bookingId: number) =>
+      bookingsApi
+        .updateBookingByCounsellor(
+          bookingId,
+          "Cancelled by counsellor",
+          counsellorId
+        )
+        .then(({ data }) => {
+          openNotification(
+            "success",
+            "Success",
+            "Booking rejected successfully"
+          );
+          return data;
+        })
+        .catch((err) => {
+          openNotification("error", "Error", err.response.data.detail);
+        }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["bookings", "all"]);
+      },
+    }
+  );
+
+const markBookingAsAbsent = (queryClient: QueryClient, counsellorId: number) =>
+  useMutation(
+    (bookingId: number) =>
+      bookingsApi
+        .updateBookingByCounsellor(bookingId, "Missed by student", counsellorId)
+        .then(({ data }) => {
+          openNotification(
+            "success",
+            "Success",
+            "Booking marked as 'Missed by student' successfully"
+          );
+          return data;
+        })
+        .catch((err) => {
+          openNotification("error", "Error", err.response.data.detail);
+        }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["bookings", "all"]);
+      },
+    }
+  );
+
+export {
+  bookSlot,
+  cancelBooking,
+  acceptBooking,
+  rejectBooking,
+  markBookingAsAbsent,
+};

@@ -1,4 +1,5 @@
 import { axiosClient } from "../axios";
+import { Status } from "../types";
 const BASE_URL = "bookings";
 
 const generateQuery = (userId?: number, isActive?: string, date?: string) => {
@@ -37,6 +38,19 @@ const bookingsApi = {
     return axiosClient.get(
       `${BASE_URL}/list/${generateQuery(userId, isActive, date)}`
     );
+  },
+  updateBookingByCounsellor(
+    booking_id: number,
+    remarks: Status,
+    assigned_counselor_id: number
+  ) {
+    const body = {
+      booking_id,
+      remarks,
+      assigned_counselor: assigned_counselor_id,
+      is_active: false,
+    };
+    return axiosClient.patch(`${BASE_URL}/update/`, body);
   },
 };
 

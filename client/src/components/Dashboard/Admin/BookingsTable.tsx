@@ -1,8 +1,15 @@
 import { TableProps } from "antd";
 import DashTable from "./Table";
 import { getBookingsListByCounsellor } from "../../../api/query/bookings";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { IDataType } from "../../../pages/Dashboard/Admin/config";
+import {
+  acceptBooking,
+  markBookingAsAbsent,
+  rejectBooking,
+} from "../../../api/mutations/bookings";
+import { useQueryClient } from "react-query";
+import AuthContext from "../../../store/auth-context";
 
 const BookingsTable: React.FC<{
   columns: TableProps<any>["columns"];
@@ -18,6 +25,22 @@ const BookingsTable: React.FC<{
     params.date
   );
   const [dataSource, setDataSource] = useState<IDataType[]>([]);
+
+  const queryClient = useQueryClient();
+  const authCtx = useContext(AuthContext);
+  const { mutate: acceptBookingMutate } = acceptBooking(
+    queryClient,
+    authCtx.user!.id
+  );
+  const { mutate: rejectBookingMutate } = rejectBooking(
+    queryClient,
+    authCtx.user!.id
+  );
+  const { mutate: absentBookingMutate } = markBookingAsAbsent(
+    queryClient,
+    authCtx.user!.id
+  );
+
   useEffect(() => {
     if (!data) return;
 
@@ -34,6 +57,9 @@ const BookingsTable: React.FC<{
         date: booking.slot.date,
         status: booking.remarks,
         counsellor: booking.assigned_counsellor || null,
+        onAccept: acceptBookingMutate,
+        onReject: rejectBookingMutate,
+        onAbsent: absentBookingMutate,
       });
     });
     // sort by date and time

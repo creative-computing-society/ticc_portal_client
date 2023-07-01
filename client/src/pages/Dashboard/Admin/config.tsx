@@ -33,6 +33,9 @@ export interface IDataType {
   date: string;
   studentId: number;
   userId: number;
+  onAccept: (bookingId: number) => void;
+  onReject: (bookingId: number) => void;
+  onAbsent: (bookingId: number) => void;
 }
 
 export const columns: ColumnsType<IDataType> = [
@@ -72,7 +75,38 @@ export const columns: ColumnsType<IDataType> = [
   },
 ];
 
-export const columnsAll: ColumnsType<IDataType> = [
+export const columnsAllPrevious: ColumnsType<IDataType> = [
+  ...columns,
+  {
+    title: "Date",
+    dataIndex: "date",
+    key: "date",
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+    render: (status: Status) => (
+      <Tag className="whitespace-pre-wrap" color={statusTagColor[status]}>
+        {status}
+      </Tag>
+    ),
+  },
+  {
+    title: "Attended by",
+    key: "counsellor",
+    dataIndex: "counsellor",
+    render: (_, record) => {
+      return record.status.includes("Cancelled") ? (
+        <span>Cancelled</span>
+      ) : (
+        <span>{record.counsellor}</span>
+      );
+    },
+  },
+];
+
+export const columnsAllUpcoming: ColumnsType<IDataType> = [
   ...columns,
   {
     title: "Date",
@@ -84,45 +118,32 @@ export const columnsAll: ColumnsType<IDataType> = [
     key: "action",
     render: (_, record) => {
       return record.status === "Pending" ? (
-        record.counsellor === null ? (
-          <Space size="middle">
-            <button
-              className="text-sm text-left p-1 hover:text-sky-400"
-              onClick={() => {
-                console.log("Accept Appointment");
-              }}
-            >
-              Accept Appointment
-            </button>
-            <button
-              className="text-sm text-left p-1 hover:text-sky-400"
-              onClick={() => {
-                console.log("Cancel");
-              }}
-            >
-              Cancel
-            </button>
-          </Space>
-        ) : (
-          <Space size="middle">
-            <button
-              className="text-sm text-left p-1 hover:text-sky-400"
-              onClick={() => {
-                console.log("Mark as attended");
-              }}
-            >
-              Mark as attended
-            </button>
-            <button
-              className="text-sm text-left p-1 hover:text-sky-400"
-              onClick={() => {
-                console.log("Absent");
-              }}
-            >
-              Absent
-            </button>
-          </Space>
-        )
+        <div className="w-full flex flex-row justify-between items-center">
+          <button
+            className="text-sm text-left p-1 hover:text-sky-400"
+            onClick={() => {
+              record.onAccept(record.key);
+            }}
+          >
+            Accept
+          </button>
+          <button
+            className="text-sm text-left p-1 hover:text-sky-400"
+            onClick={() => {
+              record.onReject(record.key);
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            className="text-sm text-left p-1 hover:text-sky-400"
+            onClick={() => {
+              record.onAbsent(record.key);
+            }}
+          >
+            Absent
+          </button>
+        </div>
       ) : record.status === "Completed" ? (
         <span>Attended by {record.counsellor}</span>
       ) : (
@@ -139,58 +160,48 @@ export const columnsToday: ColumnsType<IDataType> = [
     dataIndex: "status",
     key: "status",
     render: (status: Status) => (
-      <Tag color={statusTagColor[status]}>{status}</Tag>
+      <Tag className="whitespace-pre-wrap" color={statusTagColor[status]}>
+        {status}
+      </Tag>
     ),
   },
   {
     title: "Action",
     key: "action",
-    render: (_, record) =>
-      record.status === "Pending" ? (
-        record.counsellor === null ? (
-          <Space size="middle">
-            <button
-              className="text-sm text-left p-1 hover:text-sky-400"
-              onClick={() => {
-                console.log("Accept Appointment");
-              }}
-            >
-              Accept Appointment
-            </button>
-            <button
-              className="text-sm text-left p-1 hover:text-sky-400"
-              onClick={() => {
-                console.log("Cancel");
-              }}
-            >
-              Cancel
-            </button>
-          </Space>
-        ) : (
-          <Space size="middle">
-            <button
-              className="text-sm text-left p-1 hover:text-sky-400"
-              onClick={() => {
-                console.log("Mark as attended");
-              }}
-            >
-              Mark as attended
-            </button>
-            <button
-              className="text-sm text-left p-1 hover:text-sky-400"
-              onClick={() => {
-                console.log("Absent");
-              }}
-            >
-              Absent
-            </button>
-          </Space>
-        )
+    render: (_, record) => {
+      return record.status === "Pending" ? (
+        <div className="w-full flex flex-row justify-between items-center">
+          <button
+            className="text-sm text-left p-1 hover:text-sky-400"
+            onClick={() => {
+              record.onAccept(record.key);
+            }}
+          >
+            Accept
+          </button>
+          <button
+            className="text-sm text-left p-1 hover:text-sky-400"
+            onClick={() => {
+              record.onReject(record.key);
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            className="text-sm text-left p-1 hover:text-sky-400"
+            onClick={() => {
+              record.onAbsent(record.key);
+            }}
+          >
+            Absent
+          </button>
+        </div>
       ) : record.status === "Completed" ? (
         <span>Attended by {record.counsellor}</span>
       ) : (
         <span>-</span>
-      ),
+      );
+    },
   },
 ];
 
@@ -199,46 +210,34 @@ export const columnsPending: ColumnsType<IDataType> = [
   {
     title: "Action",
     key: "action",
-    render: (_, record) =>
-      record.counsellor === null ? (
-        <Space size="middle">
-          <button
-            className="text-sm text-left p-1 hover:text-sky-400"
-            onClick={() => {
-              console.log("Accept Appointment");
-            }}
-          >
-            Accept Appointment
-          </button>
-          <button
-            className="text-sm text-left p-1 hover:text-sky-400"
-            onClick={() => {
-              console.log("Cancel");
-            }}
-          >
-            Cancel
-          </button>
-        </Space>
-      ) : (
-        <Space size="middle">
-          <button
-            className="text-sm text-left p-1 hover:text-sky-400"
-            onClick={() => {
-              console.log("Mark as attended");
-            }}
-          >
-            Mark as attended
-          </button>
-          <button
-            className="text-sm text-left p-1 hover:text-sky-400"
-            onClick={() => {
-              console.log("Absent");
-            }}
-          >
-            Absent
-          </button>
-        </Space>
-      ),
+    render: (_, record) => (
+      <div className="w-full flex flex-row justify-between items-center">
+        <button
+          className="text-sm text-left p-1 hover:text-sky-400"
+          onClick={() => {
+            record.onAccept(record.key);
+          }}
+        >
+          Accept
+        </button>
+        <button
+          className="text-sm text-left p-1 hover:text-sky-400"
+          onClick={() => {
+            record.onReject(record.key);
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          className="text-sm text-left p-1 hover:text-sky-400"
+          onClick={() => {
+            record.onAbsent(record.key);
+          }}
+        >
+          Absent
+        </button>
+      </div>
+    ),
   },
 ];
 
@@ -302,7 +301,9 @@ export const columnsStudentPage: ColumnsType<IDataType> = [
     dataIndex: "status",
     key: "status",
     render: (status: Status) => (
-      <Tag color={statusTagColor[status]}>{status}</Tag>
+      <Tag className="whitespace-pre-wrap" color={statusTagColor[status]}>
+        {status}
+      </Tag>
     ),
   },
   {
@@ -362,11 +363,25 @@ export const tabItems: TabsProps["items"] = [
     label: `All Upcoming Sessions`,
     children: (
       <BookingsTable
-        columns={columnsAll}
+        columns={columnsAllUpcoming}
         params={{
           userId: undefined,
           date: undefined,
           isActive: "True",
+        }}
+      />
+    ),
+  },
+  {
+    key: "5",
+    label: `All Past Sessions`,
+    children: (
+      <BookingsTable
+        columns={columnsAllPrevious}
+        params={{
+          userId: undefined,
+          date: undefined,
+          isActive: "False",
         }}
       />
     ),
