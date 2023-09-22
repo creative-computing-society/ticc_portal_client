@@ -393,8 +393,24 @@ export interface IHolidayItemType {
   description: string | null;
   id: number;
   time?: string;
-  onAction: (date: string) => void;
+  onAction: (data: string) => void;
 }
+
+export interface ILeaveItemType {
+  date: string;
+  description: string | null;
+  id: number;
+  slots: string;
+  onAction: (id: number) => void;
+}
+
+export const giveSlotsArray = (slots: string[]) => {
+  if (slots.length === 0) {
+    return "All";
+  } else {
+    return slots.join(", ");
+  }
+};
 
 export const columnsHolidays: ColumnsType<IHolidayItemType> = [
   {
@@ -415,6 +431,38 @@ export const columnsHolidays: ColumnsType<IHolidayItemType> = [
         className="bg-red-500 text-white font-semibold px-4 py-1 rounded-md hover:bg-red-600"
         onClick={() => {
           record.onAction(record.date);
+        }}
+      >
+        Delete
+      </button>
+    ),
+  },
+];
+
+export const columnsLeaves: ColumnsType<ILeaveItemType> = [
+  {
+    title: "Date",
+    dataIndex: "date",
+    key: "date",
+  },
+  {
+    title: "Description",
+    dataIndex: "description",
+    key: "description",
+  },
+  {
+    title: "Slots",
+    dataIndex: "slots",
+    key: "slots",
+  },
+  {
+    title: "Action",
+    key: "action",
+    render: (_, record) => (
+      <button
+        className="bg-red-500 text-white font-semibold px-4 py-1 rounded-md hover:bg-red-600"
+        onClick={() => {
+          record.onAction(record.id);
         }}
       >
         Delete

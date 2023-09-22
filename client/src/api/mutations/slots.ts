@@ -3,13 +3,10 @@ import { QueryClient, useMutation } from "react-query";
 import slotsApi from "../slots";
 import { openNotification } from "../../components/common/Notification";
 
-const addHoliday = (
-  queryClient: QueryClient,
-  date: string,
-  description?: string
-) =>
+const addHoliday = (queryClient: QueryClient) =>
   useMutation(
-    () =>
+    ["slots", "holidays", "add"],
+    ({ date, description }: { date: string; description?: string }) =>
       slotsApi
         .addHoliday(date, description)
         .then(({ data }) => {
@@ -53,18 +50,18 @@ const deleteHoliday = (queryClient: QueryClient) =>
     }
   );
 
-const addLeaveByDate = (
-  queryClient: QueryClient,
-  userId: number,
-  date: string,
-  description?: string
-) =>
-  useMutation(() => slotsApi.addLeaveByDate(userId, date, description), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["slots", "leaves"]);
-      queryClient.invalidateQueries(["slots", "all"]);
-    },
-  });
+const addLeaveByDate = (queryClient: QueryClient, userId: number) =>
+  useMutation(
+    ["slots", "leave", "add"],
+    (data: { date: string; description?: string }) =>
+      slotsApi.addLeaveByDate(userId, data.date, data.description),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["slots", "leaves"]);
+        queryClient.invalidateQueries(["slots", "all"]);
+      },
+    }
+  );
 
 const addLeaveBySlots = (
   queryClient: QueryClient,
@@ -79,13 +76,17 @@ const addLeaveBySlots = (
     },
   });
 
-const deleteLeave = (queryClient: QueryClient, leaveId: number) =>
-  useMutation(() => slotsApi.deleteLeave(leaveId), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["slots", "leaves"]);
-      queryClient.invalidateQueries(["slots", "all"]);
-    },
-  });
+const deleteLeave = (queryClient: QueryClient) =>
+  useMutation(
+    ["slots", "leave", "delete"],
+    (leaveId: number) => slotsApi.deleteLeave(leaveId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["slots", "leaves"]);
+        queryClient.invalidateQueries(["slots", "all"]);
+      },
+    }
+  );
 
 export {
   addHoliday,

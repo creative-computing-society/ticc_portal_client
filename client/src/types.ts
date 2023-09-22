@@ -3,6 +3,15 @@ export interface IHolidayObject {
   date: string;
   description: string | null;
 }
+
+export interface ILeaveObject {
+  id: number;
+  counsellor: number;
+  counsellor_email: string;
+  date: string;
+  description: string | null;
+  slots: string[];
+}
 export interface IBookingObject {
   id: number;
   slot: ISlotObject;

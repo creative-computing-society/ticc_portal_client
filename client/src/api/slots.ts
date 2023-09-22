@@ -1,5 +1,5 @@
 import { axiosClient } from "../axios";
-import { IHolidayObject, ISlotObject } from "../types";
+import { IHolidayObject, ILeaveObject, ISlotObject } from "../types";
 const BASE_URL = "slots";
 
 const slotsApi = {
@@ -49,7 +49,7 @@ const slotsApi = {
     return axiosClient.post(`${BASE_URL}/leaves/add/`, body);
   },
   getLeavesListByConsellor() {
-    return axiosClient.get(`${BASE_URL}/leaves/list/`);
+    return axiosClient.get<ILeaveObject[]>(`${BASE_URL}/leaves/list/`);
   },
   deleteLeave(leaveId: number) {
     return axiosClient.delete(`${BASE_URL}/leaves/delete/?leave_id=${leaveId}`);
