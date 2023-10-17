@@ -3,7 +3,11 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { checkDateValidity, getSlots } from "../Form/utils";
 import { ISlotPickerProps } from "./types";
-import { getAllHolidays, getSlotsByDate } from "../../api/query/slots";
+import {
+  getAllHolidays,
+  getAllLeavesByCounsellor,
+  getSlotsByDate,
+} from "../../api/query/slots";
 import { ISlotObject } from "../../types";
 
 const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
@@ -13,6 +17,9 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
   const endDate = startDate.add(15, "day");
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
   const [selectedSlot, setSelectedSlot] = useState<ISlotObject | null>(null);
+  //TODO: implement multi select
+  const [selectedSlots, setSelectedSlots] = useState<ISlotObject[]>([]);
+
   const [filteredSlots, setFilteredSlots] = useState<ISlotObject[]>([]);
   const [isWeekend, setIsWeekend] = useState<boolean>(false);
   const [isHoliday, setIsHoliday] = useState<boolean>(false);
@@ -23,6 +30,7 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
   );
 
   const { data: holidayList } = getAllHolidays();
+  const { data: leavesList } = getAllLeavesByCounsellor();
 
   useEffect(() => {
     if (!data) return;
@@ -56,6 +64,12 @@ const SlotPicker: React.FC<ISlotPickerProps> = (props) => {
 
     setFilteredSlots(slots);
   }, [selectedDate, data, holidayList]);
+
+  useEffect(() => {
+    if (selectedDate === undefined) return;
+
+    if (onDateChange) onDateChange(selectedDate);
+  }, [selectedDate]);
 
   return (
     <div className="flex flex-col w-full">

@@ -18,12 +18,15 @@ import { useQueryClient } from "react-query";
 import {
   addHoliday,
   addLeaveByDate,
+  addLeaveBySlots,
   deleteHoliday,
   deleteLeave,
 } from "../../../api/mutations/slots";
 import TextArea from "antd/es/input/TextArea";
 import DashTable from "../../../components/Dashboard/Admin/Table";
 import AuthContext from "../../../store/auth-context";
+
+type TLeaveType = "full-day" | "slots";
 
 const ManageSlots: React.FC = () => {
   const authCtx = useContext(AuthContext);
@@ -40,6 +43,7 @@ const ManageSlots: React.FC = () => {
   const [holidayModalOpen, setHolidayModalOpen] = useState<boolean>(false);
   const [holidayList, setHolidayList] = useState<IHolidayItemType[]>([]);
   const [leaveModalOpen, setLeaveModalOpen] = useState<boolean>(false);
+  const [leaveType, setLeaveType] = useState<TLeaveType | null>(null);
   const [leaveDescription, setLeaveDescription] = useState<string | undefined>(
     undefined
   );
@@ -51,6 +55,10 @@ const ManageSlots: React.FC = () => {
   const { mutate: addHolidayMutate, isLoading } = addHoliday(queryClient);
   const { mutate: deleteHolidayMutate } = deleteHoliday(queryClient);
   const { mutate: addLeaveMutate } = addLeaveByDate(
+    queryClient,
+    authCtx.user?.id!
+  );
+  const { mutate: addLeaveBySlotsMutate } = addLeaveBySlots(
     queryClient,
     authCtx.user?.id!
   );
@@ -82,6 +90,12 @@ const ManageSlots: React.FC = () => {
     }
   }, [holidayData, leaveData]);
 
+  useEffect(() => {
+    if (!leaveModalOpen) {
+      setLeaveType(null);
+    }
+  }, [leaveModalOpen]);
+
   const onPickHoliday: DatePickerProps["onChange"] = (date, dateString) => {
     console.log(date, dateString);
     setNewHoliday({ value: date, dateString: dateString });
@@ -99,13 +113,24 @@ const ManageSlots: React.FC = () => {
   };
 
   const onAddLeave = () => {
-    if (selectedDate) {
-      addLeaveMutate({
-        date: selectedDate.format("YYYY-MM-DD"),
-        description: leaveDescription,
-      });
-      setLeaveModalOpen(false);
-      setLeaveDescription(undefined);
+    if (leaveType === "full-day") {
+      if (selectedDate) {
+        addLeaveMutate({
+          date: selectedDate.format("YYYY-MM-DD"),
+          description: leaveDescription,
+        });
+        setLeaveModalOpen(false);
+        setLeaveDescription(undefined);
+      } else return;
+    } else {
+      if (selectedSlot) {
+        addLeaveBySlotsMutate({
+          slots: [selectedSlot.id],
+          description: leaveDescription,
+        });
+        setLeaveModalOpen(false);
+        setLeaveDescription(undefined);
+      } else return;
     }
   };
 
@@ -127,6 +152,7 @@ const ManageSlots: React.FC = () => {
                 backgroundColor: "#38bdf8",
               }}
               onClick={() => {
+                setLeaveType("full-day");
                 setLeaveModalOpen(true);
               }}
             >
@@ -142,7 +168,10 @@ const ManageSlots: React.FC = () => {
               style={{
                 backgroundColor: "#38bdf8",
               }}
-              onClick={() => {}}
+              onClick={() => {
+                setLeaveType("slots");
+                setLeaveModalOpen(true);
+              }}
             >
               <span className="py-1.5 items-center justify-center text-base font-semibold">
                 Mark unavailibility at{" "}

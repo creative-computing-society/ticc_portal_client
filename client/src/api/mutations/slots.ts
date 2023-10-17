@@ -52,9 +52,22 @@ const deleteHoliday = (queryClient: QueryClient) =>
 
 const addLeaveByDate = (queryClient: QueryClient, userId: number) =>
   useMutation(
-    ["slots", "leave", "add"],
+    ["leave", "add", "date"],
     (data: { date: string; description?: string }) =>
-      slotsApi.addLeaveByDate(userId, data.date, data.description),
+      slotsApi
+        .addLeaveByDate(userId, data.date, data.description)
+        .then(({ data }) => {
+          openNotification(
+            "success",
+            "Success",
+            `Leave for ${data.date} added successfully`
+          );
+          return data;
+        })
+        .catch((err) => {
+          openNotification("error", "Error", err.response.data.detail);
+          return err;
+        }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["slots", "leaves"]);
@@ -63,18 +76,27 @@ const addLeaveByDate = (queryClient: QueryClient, userId: number) =>
     }
   );
 
-const addLeaveBySlots = (
-  queryClient: QueryClient,
-  userId: number,
-  slots: number[],
-  description?: string
-) =>
-  useMutation(() => slotsApi.addLeaveBySlots(userId, slots, description), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["slots", "leaves"]);
-      queryClient.invalidateQueries(["slots", "all"]);
-    },
-  });
+const addLeaveBySlots = (queryClient: QueryClient, userId: number) =>
+  useMutation(
+    ["leave", "add", "slots"],
+    (data: { slots: number[]; description?: string }) =>
+      slotsApi
+        .addLeaveBySlots(userId, data.slots, data.description)
+        .then(({ data }) => {
+          openNotification("success", "Success", `Leave added successfully`);
+          return data;
+        })
+        .catch((err) => {
+          openNotification("error", "Error", err.response.data.detail);
+          return err;
+        }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["slots", "leaves"]);
+        queryClient.invalidateQueries(["slots", "all"]);
+      },
+    }
+  );
 
 const deleteLeave = (queryClient: QueryClient) =>
   useMutation(

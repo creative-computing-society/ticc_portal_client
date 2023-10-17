@@ -405,7 +405,7 @@ export interface ILeaveItemType {
 }
 
 export const giveSlotsArray = (slots: string[]) => {
-  if (slots.length === 0) {
+  if (slots.length === 0 || slots.length === 16) {
     return "All";
   } else {
     return slots.join(", ");
