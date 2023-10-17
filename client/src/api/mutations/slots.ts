@@ -83,7 +83,11 @@ const addLeaveBySlots = (queryClient: QueryClient, userId: number) =>
       slotsApi
         .addLeaveBySlots(userId, data.slots, data.description)
         .then(({ data }) => {
-          openNotification("success", "Success", `Leave added successfully`);
+          openNotification(
+            "success",
+            "Success",
+            `Leave added for the selected slot successfully`
+          );
           return data;
         })
         .catch((err) => {
@@ -101,7 +105,17 @@ const addLeaveBySlots = (queryClient: QueryClient, userId: number) =>
 const deleteLeave = (queryClient: QueryClient) =>
   useMutation(
     ["slots", "leave", "delete"],
-    (leaveId: number) => slotsApi.deleteLeave(leaveId),
+    (leaveId: number) =>
+      slotsApi
+        .deleteLeave(leaveId)
+        .then(({ data }) => {
+          openNotification("success", "Success", "Leave deleted successfully");
+          return data;
+        })
+        .catch((err) => {
+          openNotification("error", "Error", err.response.data.detail);
+          return err;
+        }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["slots", "leaves"]);
