@@ -2,7 +2,7 @@ import { MenuItemType } from "antd/es/menu/hooks/useItems";
 import {
   DesktopOutlined,
   SettingOutlined,
-  FolderOutlined,
+  CalendarOutlined,
   TeamOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
@@ -16,7 +16,7 @@ export const AdminMenuItems: MenuItemArgs[] = [
   },
   {
     title: "Manage Slots",
-    icon: <SettingOutlined style={{ fontSize: "20px" }} />,
+    icon: <CalendarOutlined style={{ fontSize: "20px" }} />,
     route: "manage/slots",
   },
   // {
@@ -28,6 +28,11 @@ export const AdminMenuItems: MenuItemArgs[] = [
     title: "Manage Admins",
     icon: <TeamOutlined style={{ fontSize: "20px" }} />,
     route: "manage/admins",
+  },
+  {
+    title: "Settings",
+    icon: <SettingOutlined style={{ fontSize: "20px" }} />,
+    route: "settings",
   },
   {
     title: "Logout",

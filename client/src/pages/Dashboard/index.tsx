@@ -11,6 +11,7 @@ import ManageSlots from "./Admin/ManageSlots";
 import Student from "./Admin/Student";
 import { getLoggedInUserDetails } from "../../api/query/users";
 import AuthContext from "../../store/auth-context";
+import Settings from "./Admin/Settings";
 
 const Dashboard = () => {
   const paths = AdminMenuItems.map((item) => item.route);
@@ -53,7 +54,7 @@ const Dashboard = () => {
         onCollapse={(value) => setCollapsed(value)}
         width={250}
         style={{
-          background: "transparent",
+          background: "#fdfffd",
         }}
       >
         <div className="mb-3 py-4 px-6 flex flex-col text-[#444]">
@@ -83,6 +84,7 @@ const Dashboard = () => {
             element={<div>Manage Resources</div>}
           ></Route>
           <Route path={"manage/admins"} element={<ManageAdmins />}></Route>
+          <Route path={"settings"} element={<Settings />}></Route>
           <Route
             path={"logout"}
             element={

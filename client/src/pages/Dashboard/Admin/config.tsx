@@ -470,3 +470,22 @@ export const columnsLeaves: ColumnsType<ILeaveItemType> = [
     ),
   },
 ];
+
+export type TSiteSettingsKeys =
+  | "enableDailyReport"
+  | "enableWeeklyReport"
+  | "enableMonthlyReport"
+  | "enableNonThaparEmails";
+
+export const getSettingsLabel = (key: TSiteSettingsKeys) => {
+  switch (key) {
+    case "enableDailyReport":
+      return "Daily Report";
+    case "enableWeeklyReport":
+      return "Weekly Report";
+    case "enableMonthlyReport":
+      return "Monthly Report";
+    case "enableNonThaparEmails":
+      return "Non-Thapar Emails";
+  }
+};
